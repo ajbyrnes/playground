@@ -1,0 +1,30 @@
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 16px; }
+body { background: white; color: #222; }
+/* columns: left-hand side | = definition | computed value */
+#equations { display: grid; grid-template-columns: auto auto 1fr; align-items: center;
+             column-gap: 0.3em; row-gap: 0.8rem; font-size: 1.2rem; }
+#equations .lhs { text-align: right; }
+#equations .xpick { grid-column: 1 / -1; display: flex; gap: 1rem; align-items: center;
+                    flex-wrap: wrap; font-size: 1rem; }
+#equations .sep { grid-column: 1 / -1; width: 100%; margin: 0; border: 0; border-top: 1px solid #ccc; }
+#equations .val { font-family: monospace; font-size: 1rem; white-space: pre;
+                  margin-left: 1.5rem; padding-left: 1.5rem; border-left: 1px solid #ccc; }
+#bits text { font-family: monospace; font-size: 12px; fill: #333; }
+#bits .tick { font-size: 10px; text-anchor: middle; }
+.controls { margin: 1.5rem 0; display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+/* matrices drawn as small tiles: M = S(1) + S(2) + ... */
+.tiles { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 8px; }
+.tiles .op { font-size: 1.6rem; padding: 0 4px 22px; }
+figure.tile { margin: 0; text-align: center; }
+figure.tile figcaption { font-size: 15px; color: #444; margin-top: 4px; }
+.caption { color: #555; font-size: 0.9rem; max-width: 70ch; }
+#chart text, #products text { font-family: monospace; font-size: 11px; fill: #333; }
+#equations .val.wrap { white-space: normal; }
+#equations .panel-title { grid-column: 1 / -1; font-size: 0.75rem; font-weight: 600; color: #666;
+                          text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: -0.4rem; }
+/* a matrix in a .val cell: entries in columns between bracket-like bars */
+#equations .val:has(.matrix) { min-width: 0; overflow-x: auto; }
+.matrix { border-collapse: separate; border-spacing: 12px 3px; font-size: 0.85rem;
+          border-left: 2px solid #444; border-right: 2px solid #444; border-radius: 4px; }
+.matrix td { text-align: right; white-space: nowrap; }
+figure.tile .scale { font-family: monospace; font-size: 12px; color: #555; margin-bottom: 4px; white-space: nowrap; }
