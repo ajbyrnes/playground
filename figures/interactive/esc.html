@@ -1,0 +1,308 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Exponent Span Capacity</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js"></script>
+  <link rel="stylesheet" href="bits.css">
+  <script src="bits.js"></script>
+  <script src="slices.js"></script>
+</head>
+<body>
+  <h1>Exponent Span Capacity (ESC)</h1>
+
+  <!-- data-tex cells are rendered once by KaTeX; .val cells are filled in by render() -->
+  <div id="equations">
+    <div class="panel-title">vectors x, y</div>
+    <div class="xpick">
+      <label><input type="radio" name="mode" value="esc" checked> set ESC</label>
+      <label>ESC = <input id="esc" type="range" min="0" max="100" value="10"> <span id="esc-value"></span></label>
+      <button id="reshuffle">new significands</button>
+    </div>
+    <div class="xpick">
+      <label><input type="radio" name="mode" value="span"> set spans</label>
+      <label>n = <input id="n" type="range" min="2" max="16" value="4"> <span id="n-value"></span></label>
+      <label>x span = <input id="xspan" type="range" min="0" max="100" value="20"> <span id="xspan-value"></span></label>
+      <select id="xgrow">
+        <option value="up">grows up: smallest fixed at 2⁰</option>
+        <option value="down" selected>grows down: largest fixed at 2⁰</option>
+        <option value="both">both ways: centered on 2⁰</option>
+      </select>
+      <label>y span = <input id="yspan" type="range" min="0" max="100" value="20"> <span id="yspan-value"></span></label>
+      <select id="ygrow">
+        <option value="up">grows up: smallest fixed at 2⁰</option>
+        <option value="down" selected>grows down: largest fixed at 2⁰</option>
+        <option value="both">both ways: centered on 2⁰</option>
+      </select>
+      <select id="pairing">
+        <option value="aligned">aligned: big x meets big y</option>
+        <option value="reversed" selected>reversed: big x meets small y</option>
+        <option value="shuffled">shuffled</option>
+      </select>
+    </div>
+
+    <span class="lhs" data-tex="x_i"></span>
+    <span data-tex="= \pm\, m_i \times 2^{E_i}"></span>
+    <span class="val" id="x-value"></span>
+
+    <span class="lhs" data-tex="y_i"></span>
+    <span data-tex="= \pm\, m_i \times 2^{E_i}"></span>
+    <span class="val" id="y-value"></span>
+
+    <span class="lhs" data-tex="\exp(z_i)"></span>
+    <span data-tex="= \exp(x_i) + \exp(y_i)"></span>
+    <span class="val" id="z-value"></span>
+
+    <hr class="sep">
+    <div class="panel-title">exponent span capacity</div>
+    <span class="lhs" data-tex="\exp(x_p)"></span>
+    <span data-tex="= \max_i \exp(x_i)"></span>
+    <span class="val" id="xp-value"></span>
+
+    <span class="lhs" data-tex="\exp(y_q)"></span>
+    <span data-tex="= \max_i \exp(y_i)"></span>
+    <span class="val" id="yq-value"></span>
+
+    <span class="lhs" data-tex="\exp(z_r)"></span>
+    <span data-tex="= \max_i \exp(z_i)"></span>
+    <span class="val" id="zr-value"></span>
+
+    <span class="lhs" data-tex="\text{ESC}"></span>
+    <span data-tex="= \exp(x_p) + \exp(y_q) - \exp(z_r)"></span>
+    <span class="val" id="esc-eq-value"></span>
+
+    <hr class="sep">
+    <div class="panel-title">fixed-width format</div>
+    <span class="lhs" data-tex="W"></span>
+    <span data-tex="= 53 + \text{ESC}"></span>
+    <span class="val" id="width-value"></span>
+
+    <span class="lhs" data-tex="K"></span>
+    <span data-tex="= \lceil W / 8 \rceil"></span>
+    <span class="val" id="slices-value"></span>
+  </div>
+
+  <svg id="bits" width="100%"></svg>
+  <svg id="chart" width="100%"></svg>
+
+  <script>
+    const SLICE_BITS = 8;  // INT8 slices
+    const ESC_MAX = 100;
+
+    // Each vector in its own fixed-width format: K slices of 8 bits, anchored
+    // at the vector's largest exponent (x_p or y_q). Bits inside the format
+    // are colored by slice; bits below the last slice are lost, drawn black.
+    // blocks: [{ label, values, top, W, K, targets }]; top is exp(x_p) or
+    // exp(y_q); targets are the indices r, whose rows get highlighted.
+    function drawFormat(el, blocks, [hi, lo]) {
+      const ROW = 26, GAP = 44, TOP = 22, LABEL = 60, NOTE = 110, WIDTH = 900;
+      const plotRight = WIDTH - NOTE;
+      const colW = (plotRight - LABEL) / (hi - lo + 1);
+      const colX = p => LABEL + (hi - p) * colW;  // left edge of column p
+      // boundary between column p (kept) and column p - 1, as in bits.js
+      const cutX = p => colX(p - 1);
+
+      let svg = "", y = TOP;
+      blocks.forEach(({ label, values, top, W, K, targets }) => {
+        const blockTop = y, blockBottom = y + values.length * ROW;
+        const bottom = top - SLICE_BITS * K + 1;  // lowest power the format keeps
+
+        // slice bands, numbered above the block
+        for (let k = 0; k < K; k++) {
+          const hiP = top - SLICE_BITS * k, loP = Math.max(hiP - SLICE_BITS + 1, lo);
+          const x0 = colX(hiP), w = (hiP - loP + 1) * colW;
+          svg += `<rect x="${x0}" y="${blockTop - 3}" width="${w}" height="${blockBottom - blockTop + 6}"
+                    fill="${sliceColor(k)}" fill-opacity="0.08" stroke="${sliceColor(k)}" stroke-opacity="0.3"/>`;
+          if (w > 14) svg += `<text x="${x0 + w / 2}" y="${blockTop - 8}" text-anchor="middle" fill="${sliceColor(k)}">${k + 1}</text>`;
+        }
+        // W = 53 + ESC is what's needed; the last slice rounds it up to 8K
+        svg += `<line x1="${cutX(top - W + 1)}" x2="${cutX(top - W + 1)}" y1="${blockTop - 3}" y2="${blockBottom + 14}"
+                  stroke="#888" stroke-dasharray="2 3"/>`;
+        svg += `<text x="${cutX(top - W + 1) - 3}" y="${blockBottom + 14}" text-anchor="end" font-size="10" fill="#888">W = 53 + ESC</text>`;
+        svg += `<line x1="${cutX(bottom)}" x2="${cutX(bottom)}" y1="${blockTop - 3}" y2="${blockBottom + 3}"
+                  stroke="#222" stroke-width="2"/>`;
+
+        svg += `<text x="0" y="${(blockTop + blockBottom) / 2 + 4}">${label}</text>`;
+
+        values.forEach((v, i) => {
+          const rowY = blockTop + i * ROW, textY = rowY + ROW / 2 + 4;
+          const target = targets.includes(i);
+          // x_r / y_r: a gold band behind the row, drawn first so bits sit on top
+          if (target) {
+            svg += `<rect x="${LABEL - 26}" y="${rowY}" width="${WIDTH - LABEL + 26}" height="${ROW}" rx="3"
+                      fill="#ffc400" fill-opacity="0.3" stroke="#d49a00" stroke-width="1.5"/>`;
+          }
+          const bits = significandBits(v);
+          let dropped = 0;
+          for (const [p, b] of bits) {
+            const lost = p < bottom;
+            if (lost) dropped++;
+            const k = Math.floor((top - p) / SLICE_BITS);
+            svg += `<rect x="${colX(p)}" y="${rowY + 2}" width="${colW}" height="${ROW - 4}"
+                      fill="${lost ? "#000" : sliceColor(k)}" fill-opacity="${b ? 1 : lost ? 0.35 : 0.25}">
+                      <title>${label}[${i}]: bit at 2^${p} = ${b}, ${lost ? "dropped" : `slice ${k + 1}`}</title></rect>`;
+          }
+          svg += `<text x="${colX(bits[0][0]) - 2}" y="${textY}" text-anchor="end">${v < 0 ? "−" : "+"}</text>`;
+          svg += `<text x="${WIDTH - 4}" y="${textY}" text-anchor="end"${target ? ` font-weight="bold"` : ""}>${target ? `${label}_r ` : ""}[${i}] ${dropped ? `−${dropped} bits` : "exact"}</text>`;
+        });
+        y = blockBottom + GAP;
+      });
+
+      // a power-of-two tick every `step` columns, spaced at least ~30px apart
+      const step = [4, 8, 16, 32, 64].find(s => s * colW >= 30) || 64;
+      const height = y;
+      for (let p = hi; p >= lo; p--) {
+        if (p % step !== 0) continue;
+        svg += `<text class="tick" x="${colX(p) + colW / 2}" y="${height - 8}">2<tspan dy="-5" font-size="8">${p}</tspan></text>`;
+      }
+
+      el.setAttribute("viewBox", `0 0 ${WIDTH} ${height}`);
+      el.innerHTML = svg;
+    }
+
+    // exponent of a nonzero double: the power of two of its leading bit
+    const expOf = v => significandBits(v)[0][0];
+
+    // The ESC formula from Section 4. Only exponents matter: z_i's exponent
+    // is exp(x_i) + exp(y_i), not the exponent of the actual product.
+    function escOf(x, y) {
+      const ex = x.map(expOf), ey = y.map(expOf);
+      const ez = ex.map((e, i) => e + ey[i]);
+      const xp = Math.max(...ex), yq = Math.max(...ey), zr = Math.max(...ez);
+      // r isn't unique: every pair whose exponents sum to exp(z_r) is a target
+      const rs = ez.flatMap((e, i) => e === zr ? [i] : []);
+      return { ex, ey, ez, xp, yq, zr, rs, esc: xp + yq - zr };
+    }
+
+    // Vectors whose ESC is exactly `esc`. Pair 0 and pair 1 are anti-aligned:
+    // x's biggest entry meets a small y, and y's biggest meets a small x, so
+    // both Hadamard exponents are -esc while exp(x_p) + exp(y_q) = 0. Pairs 2
+    // and 3 sit a few bits further down, to show the graceful drop-off.
+    function makeVectors(esc, seed) {
+      const rng = mulberry32(seed);
+      const x = [0, -esc, -esc - 4, -1];
+      const y = [-esc, 0, -2, -esc - 10];
+      return {
+        x: x.map(e => randomSignificand(rng) * 2 ** e),
+        y: y.map(e => randomSignificand(rng) * 2 ** e),
+      };
+    }
+
+    // Vectors from exponent spans instead: x's n exponents spread evenly over
+    // xspan bits (largest first), likewise y's, then y's order is changed so
+    // the big entries meet x's big ones (aligned), small ones (reversed), or
+    // somewhere in between (shuffled, seeded so it holds still while you drag).
+    // grow says which end stays put as the span widens: "up" keeps the
+    // smallest exponent at 0 (so the largest climbs), "down" keeps the largest
+    // at 0 (so the smallest sinks), "both" is spreadExponent's centering.
+    function spanExponents(n, span, grow) {
+      const shift = { up: span - Math.ceil(span / 2), down: -Math.ceil(span / 2), both: 0 }[grow];
+      return Array.from({ length: n }, (_, i) => spreadExponent(i, n, span) + shift);
+    }
+
+    function makeSpanVectors(n, xspan, yspan, xgrow, ygrow, pairing, seed) {
+      const rng = mulberry32(seed);
+      const ex = spanExponents(n, xspan, xgrow);
+      let ey = spanExponents(n, yspan, ygrow);
+      if (pairing === "reversed") ey.reverse();
+      if (pairing === "shuffled") {
+        const order = mulberry32(seed + 1000);  // own stream, so significands don't change with it
+        for (let i = n - 1; i > 0; i--) {
+          const j = Math.floor(order() * (i + 1));
+          [ey[i], ey[j]] = [ey[j], ey[i]];
+        }
+      }
+      return {
+        x: ex.map(e => randomSignificand(rng) * 2 ** e),
+        y: ey.map(e => randomSignificand(rng) * 2 ** e),
+      };
+    }
+
+    // Read whichever mode is selected. escMax is the largest ESC that mode
+    // can reach, for the chart's x axis.
+    function inputs() {
+      const value = id => Number(document.getElementById(id).value);
+      for (const id of ["esc", "n", "xspan", "yspan"]) {
+        document.getElementById(`${id}-value`).textContent = value(id);
+      }
+      const mode = document.querySelector("input[name=mode]:checked").value;
+      if (mode === "esc") {
+        return {
+          ...makeVectors(value("esc"), seed),
+          escMax: ESC_MAX,
+        };
+      }
+      const choice = id => document.getElementById(id).value;
+      return {
+        ...makeSpanVectors(value("n"), value("xspan"), value("yspan"),
+                           choice("xgrow"), choice("ygrow"), choice("pairing"), seed),
+        escMax: 200,  // x span + y span, when fully reversed
+      };
+    }
+
+    // Columns from the highest leading bit down to the lowest bit, or the
+    // format's last slice if that reaches further. Both ends are snapped
+    // outward (top to 8 bits, bottom to 32) with a little room to spare, so
+    // the columns only rescale every few steps of the slider, not every one.
+    function formatRange(x, y) {
+      const { xp, yq, esc } = escOf(x, y);
+      const K = Math.ceil((53 + esc) / SLICE_BITS);
+      const bits = [...x, ...y].flatMap(v => significandBits(v).map(([p]) => p));
+      const bottom = Math.min(xp, yq) - SLICE_BITS * K + 1;
+      const hi = Math.max(xp, yq) + 1, lo = Math.min(...bits, bottom);
+      return [Math.ceil(hi / 8) * 8, Math.floor((lo - 4) / 32) * 32];
+    }
+
+    // one line per element, prefixed with its index
+    const perElement = (vs, format) => vs.map((v, i) => `[${i}] ${format(v)}`).join("\n");
+
+    let seed = 1;
+    function render() {
+      const { x, y, escMax } = inputs();
+      const { ez, xp, yq, zr, rs, esc } = escOf(x, y);
+      const W = 53 + esc, K = Math.ceil(W / 8);
+
+      const set = (id, html) => document.getElementById(id).innerHTML = html;
+      const pow = p => `2<sup>${p}</sup>`;
+      set("x-value", perElement(x, formatSignificand));
+      set("y-value", perElement(y, formatSignificand));
+      set("z-value", ez.map((e, i) => `[${i}] ${e}${rs.includes(i) ? "  ← z_r" : ""}`).join("\n"));
+      set("xp-value", xp);
+      set("yq-value", yq);
+      set("zr-value", zr);
+      set("esc-eq-value", `${xp} + ${yq} − (${zr}) = ${esc}`);
+      set("width-value", `53 + ${esc} = ${W} bits`);
+      set("slices-value", `⌈${W} / 8⌉ = ${K} INT8 slices (${8 * K} bits)`);
+
+      const range = formatRange(x, y);
+      drawFormat(document.getElementById("bits"), [
+        { label: "x", values: x, top: xp, W, K, targets: rs },
+        { label: "y", values: y, top: yq, W, K, targets: rs },
+      ], range);
+
+      // K jumps by one every 8 steps of ESC: one more slice per 8 bits of span
+      const slicesAt = e => Math.ceil((53 + e) / SLICE_BITS);
+      const ys = Array.from({ length: escMax + 1 }, (_, e) => slicesAt(e));
+      drawStepChart(document.getElementById("chart"), {
+        xMax: escMax, xLabel: "ESC (bits)", yLabel: "slices K",
+        series: [{ ys, color: sliceColor(0), label: "K = ⌈(53 + ESC) / 8⌉" }],
+        markers: [{ x: esc, y: K, color: "#222" }],
+      });
+    }
+
+    renderTex();
+    // touching a mode's control switches to that mode
+    const pick = mode => document.querySelector(`input[name=mode][value=${mode}]`).checked = true;
+    for (const id of ["esc", "n", "xspan", "yspan", "xgrow", "ygrow", "pairing"]) {
+      document.getElementById(id).addEventListener("input", () => {
+        pick(id === "esc" ? "esc" : "span");
+        render();
+      });
+    }
+    for (const radio of document.querySelectorAll("input[name=mode]")) radio.addEventListener("change", render);
+    document.getElementById("reshuffle").addEventListener("click", () => { seed++; render(); });
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ExtractScalar</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js"></script>
+  <link rel="stylesheet" href="bits.css">
+  <script src="bits.js"></script>
+</head>
+<body>
+  <h1>ExtractScalar(x, M)</h1>
+
+  <!-- data-tex cells are rendered once by KaTeX; .val cells are filled in by render() -->
+  <div id="equations">
+    <div class="xpick">
+      <label>x = <input id="x" value="0.1" size="20"></label>
+      <select id="presets"><option value="">pick x…</option></select>
+      <button id="random">random x</button>
+    </div>
+
+    <span class="lhs" data-tex="x"></span>
+    <span data-tex="= \pm\, d \times 10^{k}, \quad d \in [1, 10)"></span>
+    <span class="val" id="x-dec-value"></span>
+
+    <span class="lhs" data-tex="x"></span>
+    <span data-tex="= \pm\, m \times 2^{E}, \quad m \in [1, 2)"></span>
+    <span class="val" id="x-sig-value"></span>
+
+    <hr class="sep">
+    <span class="lhs" data-tex="\sigma"></span>
+    <span data-tex="= 2^{M} \cdot 2^{\lceil \log_2 |x| \rceil}"></span>
+    <span class="val" id="sigma-value"></span>
+
+    <span class="lhs" data-tex="x_{hi}"></span>
+    <span data-tex="= \mathrm{fl}\big((\sigma + x) - \sigma\big)"></span>
+    <span class="val" id="x_hi-value"></span>
+
+    <span class="lhs" data-tex="x_{lo}"></span>
+    <span data-tex="= \mathrm{fl}(x - x_{hi})"></span>
+    <span class="val" id="x_lo-value"></span>
+
+    <span class="lhs" data-tex="x"></span>
+    <span data-tex="= x_{hi} + x_{lo}"></span>
+    <span class="val" id="x-value"></span>
+  </div>
+
+  <div class="controls">
+    <label>M = <input id="M" type="range" min="0" max="55" value="20"> <span id="M-value"></span></label>
+  </div>
+
+  <svg id="bits" width="100%"></svg>
+
+  <script>
+    // Same steps as splitting.py's extract_scalar. JS numbers are float64,
+    // so each + and - rounds exactly the way NumPy's does.
+    function extractScalar(x, M) {
+      const e = Math.ceil(Math.log2(Math.abs(x)));
+      const sigma = 2 ** M * 2 ** e;
+      const s = sigma + x;  // kept separate so we can see where it rounded
+      const x_hi = s - sigma;
+      const x_lo = x - x_hi;
+      return { e, sigma, s, x_hi, x_lo };
+    }
+
+    function render() {
+      const x = Number(document.getElementById("x").value);
+      const M = Number(document.getElementById("M").value);
+      document.getElementById("M-value").textContent = M;
+
+      if (!Number.isFinite(x) || x === 0) return;  // no bits to split
+
+      const { e, s, x_hi, x_lo } = extractScalar(x, M);
+      const range = bitRange(M => {
+        const r = extractScalar(x, M);
+        return { values: [x, r.x_hi, r.x_lo], cuts: [cutPower(r.s)] };
+      });
+      const cut = cutPower(s);
+      const hiBits = hiBitCount(x, cut);
+      drawSplit(document.getElementById("bits"), [
+        { op: "",  color: COLORS.x,    rows: [{ name: "x",    value: x,    cut }] },
+        { op: "=", color: COLORS.x_hi, rows: [{ name: "x_hi", value: x_hi, cut }] },
+        { op: "+", color: COLORS.x_lo, rows: [{ name: "x_lo", value: x_lo, cut }] },
+      ], range, { cut, text: `← x_hi = ${hiBits} bits ┊ ${53 - hiBits} bits = x_lo →` });
+
+      const set = (id, html) => document.getElementById(id).innerHTML = html;
+      set("x-dec-value", formatValue(x));
+      set("x-sig-value", formatSignificand(x));
+      set("sigma-value", `2<sup>${M}</sup> · 2<sup>${e}</sup> = 2<sup>${M + e}</sup>`);
+      set("x_hi-value", formatValue(x_hi));
+      set("x_lo-value", formatValue(x_lo));
+      set("x-value", formatValue(x_hi + x_lo));
+    }
+
+    renderTex();
+
+    // Presets and the random button just write into the x box. String(v) is
+    // the shortest text that reads back as the same double, so nothing is lost.
+    const PRESETS = [
+      ["0.1", 0.1], ["−0.1", -0.1], ["1/3", 1 / 3], ["100", 100],
+      ["π", Math.PI], ["1", 1], ["1 + 2⁻⁵²", 1 + 2 ** -52], ["1e16 + 2", 1e16 + 2],
+    ];
+    const xInput = document.getElementById("x");
+    const presets = document.getElementById("presets");
+    for (const [label, v] of PRESETS) presets.add(new Option(`${label}  (${v})`, String(v)));
+
+    function setX(v) {
+      xInput.value = String(v);
+      render();
+    }
+    presets.addEventListener("change", () => presets.value && setX(Number(presets.value)));
+
+    // Math.random() fills the significand with random bits; scaling by a power
+    // of two only moves the exponent, so they all survive.
+    document.getElementById("random").addEventListener("click", () => {
+      const k = Math.floor(Math.random() * 21) - 10;  // 2^-10 .. 2^10
+      setX((Math.random() < 0.5 ? -1 : 1) * Math.random() * 2 ** k);
+    });
+
+    xInput.addEventListener("input", () => { presets.value = ""; render(); });
+    document.getElementById("M").addEventListener("input", render);
+    render();
+
+    // compare with floatbits.py: significand_bits(100.0)[:5] → (6,1) (5,1) (4,0) (3,0) (2,1)
+    console.log("significandBits(100):", JSON.stringify(significandBits(100).slice(0, 5)));
+  </script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Split Matrix</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js"></script>
+  <link rel="stylesheet" href="bits.css">
+  <script src="bits.js"></script>
+  <script src="slices.js"></script>
+</head>
+<body>
+  <h1>Split_Mat(A): splitting a matrix by rows</h1>
+
+  <!-- data-tex cells are rendered once by KaTeX; .val cells are filled in by render() -->
+  <div id="equations">
+    <div class="panel-title">matrix A</div>
+    <div class="xpick">
+      <label>rows m = <input id="m" type="range" min="2" max="6" value="4"> <span id="m-value"></span></label>
+      <label>columns n = <input id="n" type="range" min="2" max="8" value="4"> <span id="n-value"></span></label>
+      <label>widest row span = <input id="span" type="range" min="0" max="300" value="100"> <span id="span-value"></span> bits</label>
+      <span id="span-range"></span>
+      <button id="reshuffle">new significands</button>
+    </div>
+
+    <span class="lhs" data-tex="a_{ij}"></span>
+    <span data-tex="= \pm\, d_{ij} \times 10^{k_{ij}}"></span>
+    <span class="val" id="a-dec-value"></span>
+
+    <span class="lhs" data-tex="\text{span}_i"></span>
+    <span data-tex="= \max_j E_{ij} - \min_j E_{ij}"></span>
+    <span class="val" id="spans-value"></span>
+
+    <hr class="sep">
+    <div class="panel-title">bits per slice</div>
+    <span class="lhs" data-tex="\beta"></span>
+    <span data-tex="= \left\lceil \frac{-\log_2 u + \log_2 n}{2} \right\rceil"></span>
+    <span class="val" id="beta-value"></span>
+
+    <span class="lhs" data-tex="u"></span>
+    <span data-tex="= 2^{-53}"></span>
+    <span class="val">unit roundoff of float64</span>
+
+    <span class="lhs" data-tex="\alpha"></span>
+    <span data-tex="= 53 - \beta"></span>
+    <span class="val" id="alpha-value"></span>
+
+    <hr class="sep">
+    <div class="panel-title">splitting loop, each row on its own</div>
+    <span class="lhs" data-tex="\sigma^{(k)}_i"></span>
+    <span data-tex="= 2^{\beta} \cdot 2^{\lceil \log_2 \max_j |a^{(k)}_{ij}| \rceil}"></span>
+    <span class="val" id="sigma-value"></span>
+
+    <span class="lhs" data-tex="D^{(k)}"></span>
+    <span data-tex="= \mathrm{fl}\big((A^{(k)} + \sigma^{(k)} e^T) - \sigma^{(k)} e^T\big)"></span>
+    <span class="val"></span>
+
+    <span class="lhs" data-tex="A^{(k+1)}"></span>
+    <span data-tex="= \mathrm{fl}(A^{(k)} - D^{(k)}), \quad A^{(1)} = A"></span>
+    <span class="val"></span>
+
+    <hr class="sep">
+    <div class="panel-title">slice count</div>
+    <span class="lhs" data-tex="A"></span>
+    <span data-tex="= \textstyle\sum_{k=1}^{K} D^{(k)}, \quad K = \max_i K_i"></span>
+    <span class="val" id="count-value"></span>
+  </div>
+
+  <h2>A = D<sup>(1)</sup> + D<sup>(2)</sup> + …</h2>
+  <div class="tiles" id="tiles"></div>
+  <p class="caption">
+    Darker cells in A have larger exponents; colored cells in D<sup>(k)</sup> are nonzero.
+    Large entries are used up in the first slices, small ones start in later slices.
+  </p>
+
+  <h2>Which slice each bit of A lands in</h2>
+  <svg id="bits" width="100%"></svg>
+  <p class="caption">
+    Each cell is one entry's 53 significand bits (leading bit on the left, solid = 1,
+    faded = 0), colored by the slice that holds them. Each row has its own σ, so each row
+    is split exactly like split_vector, with its own windows of α bits. Row i needs
+    K<sub>i</sub> slices; A needs K = max K<sub>i</sub>, and rows that finish early are
+    zero in the later D<sup>(k)</sup>.
+  </p>
+
+  <h2>Slice count vs widest row span</h2>
+  <svg id="chart" width="100%"></svg>
+  <p class="caption">
+    Shifting a whole row up or down changes nothing, because σ follows the row's max. Only
+    the span inside a row costs slices, so the widest row sets K.
+  </p>
+
+  <script>
+    // m×n matrix with random 53-bit significands. Row i's exponents are spread
+    // evenly around 0 over span_i bits, and span_i grows from 0 (row 0) to `span` (last row).
+    function makeA(m, n, span, seed) {
+      const rng = mulberry32(seed);
+      return Array.from({ length: m }, (_, i) => {
+        const rowSpan = Math.round(span * i / (m - 1));
+        return Array.from({ length: n }, (_, j) => randomSignificand(rng) * 2 ** spreadExponent(j, n, rowSpan));
+      });
+    }
+
+    // A laid out as a matrix, each entry to 5 significant digits so a row
+    // fits across the panel; hovering an entry shows its full value.
+    function matrixTable(A) {
+      const short = v => {
+        const [mantissa, exp] = Math.abs(v).toExponential(4).split("e");
+        return `${v < 0 ? "−" : " "}${mantissa}×10<sup>${Number(exp)}</sup>`;
+      };
+      const rows = A.map((row, i) => `<tr>${row.map((v, j) =>
+        `<td title="a[${i}][${j}] = ${v}">${short(v)}</td>`).join("")}</tr>`);
+      return `<table class="matrix">${rows.join("")}</table>`;
+    }
+
+    // A as an m×n grid of cells. Each cell is a[i][j]'s own 53 bits, colored
+    // by which of row i's slice windows (rows[i], from splitMat) each bit is in.
+    // The cells don't share a bit axis; the colors say how they line up.
+    function drawMatrixBits(el, A, rows, K) {
+      const WIDTH = 900, LABEL = 60, NOTE = 60, HEAD = 20, CELL_H = 40, PAD = 6;
+      const m = A.length, n = A[0].length;
+      const cellW = (WIDTH - LABEL - NOTE) / n;
+      const bitW = (cellW - 2 * PAD) / 53;
+
+      let svg = "";
+      for (let j = 0; j < n; j++) {
+        svg += `<text x="${LABEL + (j + 0.5) * cellW}" y="${HEAD - 6}" text-anchor="middle">col ${j}</text>`;
+      }
+      A.forEach((row, i) => {
+        const y = HEAD + i * CELL_H, passes = rows[i];
+        const slice = p => sliceOf(passes, p)[0];
+        svg += `<text x="0" y="${y + CELL_H / 2 + 4}">row ${i}</text>`;
+        svg += `<text x="${WIDTH - 4}" y="${y + CELL_H / 2 + 4}" text-anchor="end">K = ${passes.length}</text>`;
+
+        row.forEach((v, j) => {
+          const x = LABEL + j * cellW;
+          const bits = significandBits(v);
+          const used = [...new Set(bits.map(([p]) => slice(p) + 1))];
+          svg += `<g><title>a[${i}][${j}] = ${v}\nbits in slice ${used.join(", ")}</title>`;
+          svg += `<rect x="${x + 1}" y="${y + 1}" width="${cellW - 2}" height="${CELL_H - 2}" fill="#fafafa" stroke="#ddd"/>`;
+          svg += `<text x="${x + PAD}" y="${y + 14}" font-size="10">${v < 0 ? "−" : "+"}2<tspan dy="-4" font-size="8">${bits[0][0]}</tspan></text>`;
+          bits.forEach(([p, b], t) => {
+            svg += `<rect x="${x + PAD + t * bitW}" y="${y + 20}" width="${bitW + 0.05}" height="${CELL_H - 28}"
+                      fill="${sliceColor(slice(p))}" fill-opacity="${b ? 1 : 0.25}"/>`;
+          });
+          svg += `</g>`;
+        });
+      });
+
+      // legend: one swatch per slice
+      const legendY = HEAD + m * CELL_H + 18;
+      for (let k = 0; k < K; k++) {
+        const x = LABEL + k * Math.min(62, (WIDTH - LABEL) / K);
+        svg += `<rect x="${x}" y="${legendY - 9}" width="10" height="10" fill="${sliceColor(k)}"/>`;
+        svg += `<text x="${x + 14}" y="${legendY}">D(${k + 1})</text>`;
+      }
+      const height = legendY + 10;
+      el.setAttribute("viewBox", `0 0 ${WIDTH} ${height}`);
+      el.innerHTML = svg;
+    }
+
+    // α = 53 - β bits per slice, so this many windows cover the span plus 53 bits
+    const bound = (span, beta) => Math.ceil((span + 53) / (53 - beta));
+    const SPAN_MAX = 300;
+
+    let seed = 1;
+
+    function render() {
+      const m = Number(document.getElementById("m").value);
+      const n = Number(document.getElementById("n").value);
+      const span = Number(document.getElementById("span").value);
+      for (const id of ["m", "n", "span"]) {
+        document.getElementById(`${id}-value`).textContent = document.getElementById(id).value;
+      }
+
+      const A = makeA(m, n, span, seed);
+      const beta = betaFor(n);
+      const { rows, D } = splitMat(A, beta);
+      const counts = rows.map(passes => passes.length);
+
+      // exact check: every entry of A equals the sum of its slices
+      const exactOk = A.every((row, i) => row.every((a, j) =>
+        D.reduce((sum, Dk) => sum + exact(Dk[i][j]), 0n) === exact(a)));
+
+      const set = (id, html) => document.getElementById(id).innerHTML = html;
+      set("a-dec-value", matrixTable(A));
+      // spans are in powers of two: show each row's exponent range in binary
+      const pow = p => `2<sup>${p}</sup>`;
+      set("span-range", `(${pow(spreadExponent(0, 2, span))} … ${pow(spreadExponent(1, 2, span))})`);
+      set("spans-value", A.map((row, i) => {
+        const tops = row.map(v => significandBits(v)[0][0]);
+        const hi = Math.max(...tops), lo = Math.min(...tops);
+        return `row ${i}: ${String(hi - lo).padStart(3)} bits  (${pow(hi)} … ${pow(lo)})`;
+      }).join("\n"));
+      set("beta-value", `⌈(53 + log₂ ${n}) / 2⌉ = ${beta}`);
+      set("alpha-value", `53 − ${beta} = ${53 - beta} bits each slice holds`);
+      // σ for every pass of every row: row i's passes are the k = 1..K_i entries
+      set("sigma-value", rows.map((passes, i) =>
+        `row ${i}: ${passes.map(p => `2<sup>${beta + p.e}</sup>`).join(", ")}`).join("\n"));
+      set("count-value", `K<sub>i</sub> = ${counts.join(", ")}  →  K = ${D.length}\n` +
+        `Σ D<sup>(k)</sup> = A exactly: ${exactOk ? "✓" : "✗"}`);
+
+      document.getElementById("tiles").innerHTML = sliceTiles("D", A, D, "A");
+
+      drawMatrixBits(document.getElementById("bits"), A, rows, D.length);
+
+      // K at every widest-row span for this shape and these significands
+      const spans = Array.from({ length: SPAN_MAX + 1 }, (_, s) => s);
+      const ks = spans.map(s => splitMat(makeA(m, n, s, seed), beta).D.length);
+      drawStepChart(document.getElementById("chart"), {
+        xMax: SPAN_MAX, xLabel: "widest row span (bits)", yLabel: "slices K",
+        series: [
+          { ys: ks, color: "#2a78d6", label: `K for this A (${m}×${n}, β = ${beta})` },
+          { ys: spans.map(s => bound(s, beta)), color: "#999", dash: true, label: `⌈(span + 53) / α⌉, α = ${53 - beta}` },
+        ],
+        markers: [{ x: span, y: ks[span], color: "#2a78d6" }],
+      });
+    }
+
+    renderTex();
+    for (const id of ["m", "n", "span"]) document.getElementById(id).addEventListener("input", render);
+    document.getElementById("reshuffle").addEventListener("click", () => {
+      seed = Math.floor(Math.random() * 2 ** 31);
+      render();
+    });
+    render();
+  </script>
+</body>
+</html>

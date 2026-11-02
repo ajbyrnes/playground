@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Accurate Matrix Product</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js"></script>
+  <link rel="stylesheet" href="bits.css">
+  <script src="bits.js"></script>
+  <style>
+    body { max-width: 1100px; }
+    #equations { row-gap: 1.1rem; }
+    #equations .val { font-family: system-ui, sans-serif; color: #444; }
+  </style>
+</head>
+<body>
+  <h1>Acc_Mul(A, B, k): an accurate product from k slices</h1>
+
+  <!-- static: every cell is rendered once by KaTeX, nothing changes -->
+  <div id="equations">
+    <div class="panel-title">splitting into k parts</div>
+    <span class="lhs" data-tex="A"></span>
+    <span data-tex="= \sum_{i=1}^{k-1} A^{(i)} + \bar{A}^{(k)}"></span>
+    <span class="val">D = Split_Mat(A, k)</span>
+
+    <span class="lhs" data-tex="\bar{A}^{(l-1)}"></span>
+    <span data-tex="= A^{(l-1)} + \bar{A}^{(l)}, \quad 2 \le l \le k, \quad \bar{A}^{(1)} = A"></span>
+    <span class="val">Ā<sup>(l)</sup>: everything after the first l − 1 slices</span>
+
+    <span class="lhs" data-tex="B"></span>
+    <span data-tex="= \sum_{j=1}^{k-1} B^{(j)} + \bar{B}^{(k)}"></span>
+    <span class="val">E = Split_Mat(Bᵀ, k)ᵀ</span>
+
+    <span class="lhs" data-tex="\bar{B}^{(l-1)}"></span>
+    <span data-tex="= B^{(l-1)} + \bar{B}^{(l)}, \quad 2 \le l \le k, \quad \bar{B}^{(1)} = B"></span>
+    <span class="val"></span>
+
+    <hr class="sep">
+    <div class="panel-title">error-free products (Theorem 1)</div>
+    <span class="lhs" data-tex="\mathrm{fl}\big(A^{(i)} B^{(j)}\big)"></span>
+    <span data-tex="= A^{(i)} B^{(j)} \quad \text{for } i + j \le k"></span>
+    <span class="val">no rounding</span>
+
+    <hr class="sep">
+    <div class="panel-title">accurate product, eq. (29)</div>
+    <span class="lhs" data-tex="AB"></span>
+    <span data-tex="= \underbrace{\sum_{i + j \le k} A^{(i)} B^{(j)}}_{\text{exact}}
+                    + \underbrace{\sum_{i=1}^{k-1} A^{(i)} \bar{B}^{(k-i+1)} + \bar{A}^{(k)} B}_{\text{rounded, but small}}"></span>
+    <span class="val">k(k − 1)/2 + k matrix products</span>
+
+    <hr class="sep">
+    <div class="panel-title">written out</div>
+    <span class="lhs" data-tex="k = 2: \; AB"></span>
+    <span data-tex="= A^{(1)} B^{(1)} + \big(A^{(1)} \bar{B}^{(2)} + \bar{A}^{(2)} B\big)"></span>
+    <span class="val">3 products, 6n³ flops</span>
+
+    <span class="lhs" data-tex="k = 3: \; AB"></span>
+    <span data-tex="= A^{(1)} B^{(1)} + \big(A^{(2)} B^{(1)} + A^{(1)} B^{(2)}\big)
+                    + \big(A^{(1)} \bar{B}^{(3)} + A^{(2)} \bar{B}^{(2)} + \bar{A}^{(3)} B\big)"></span>
+    <span class="val">6 products, 12n³ flops</span>
+
+    <span class="lhs" data-tex="k = 4: \; AB"></span>
+    <span data-tex="\begin{aligned}
+                    &= A^{(1)} B^{(1)} + \big(A^{(2)} B^{(1)} + A^{(1)} B^{(2)}\big)
+                       + \big(A^{(3)} B^{(1)} + A^{(2)} B^{(2)} + A^{(1)} B^{(3)}\big) \\
+                    &\quad + \big(A^{(1)} \bar{B}^{(4)} + A^{(2)} \bar{B}^{(3)} + A^{(3)} \bar{B}^{(2)} + \bar{A}^{(4)} B\big)
+                    \end{aligned}"></span>
+    <span class="val">10 products, 20n³ flops</span>
+
+    <hr class="sep">
+    <div class="panel-title">Algorithm 5: Acc_Mul(A, B, k, δ)</div>
+    <span class="lhs" data-tex="D, \; E"></span>
+    <span data-tex="= \text{Split\_Mat}(A, k, \delta), \;\; \text{Split\_Mat}(B^T, k, \delta)^T"></span>
+    <span class="val">h<sub>A</sub>, h<sub>B</sub> ≤ k slices each</span>
+
+    <span class="lhs" data-tex="G_l"></span>
+    <span data-tex="= \mathrm{fl}\big(D^{(r)} E^{(s)}\big), \quad r + s \le k"></span>
+    <span class="val">error-free</span>
+
+    <span class="lhs" data-tex="G_l"></span>
+    <span data-tex="= \mathrm{fl}\Big(D^{(r)} \cdot \mathrm{fl}\big(\textstyle\sum_{s=k-r+1}^{h_B} E^{(s)}\big)\Big), \quad r = 1, \dots, h_A"></span>
+    <span class="val">the rest of B, in one product</span>
+
+    <span class="lhs" data-tex="C"></span>
+    <span data-tex="= \mathrm{fl}\big(\textstyle\sum_{l} G_l\big) \approx AB"></span>
+    <span class="val">ascending l, or an accurate sum</span>
+  </div>
+
+  <script>renderTex();</script>
+</body>
+</html>

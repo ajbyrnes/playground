@@ -1,0 +1,202 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>EFT Matrix Product</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js"></script>
+  <link rel="stylesheet" href="bits.css">
+  <script src="bits.js"></script>
+  <script src="slices.js"></script>
+</head>
+<body>
+  <h1>EFT_Mul(A, B): an exact matrix product from slices</h1>
+
+  <!-- data-tex cells are rendered once by KaTeX; .val cells are filled in by render() -->
+  <div id="equations">
+    <div class="panel-title">matrices A and B</div>
+    <div class="xpick">
+      <label>n = <input id="n" type="range" min="2" max="8" value="4"> <span id="n-value"></span></label>
+      <label>A row span = <input id="spanA" type="range" min="0" max="300" value="60"> <span id="spanA-value"></span></label>
+      <label>B column span = <input id="spanB" type="range" min="0" max="300" value="120"> <span id="spanB-value"></span></label>
+      <button id="reshuffle">new significands</button>
+    </div>
+
+    <hr class="sep">
+    <div class="panel-title">bits per slice</div>
+    <span class="lhs" data-tex="\beta"></span>
+    <span data-tex="= \left\lceil \frac{-\log_2 u + \log_2 n}{2} \right\rceil"></span>
+    <span class="val" id="beta-value"></span>
+
+    <span class="lhs" data-tex="u"></span>
+    <span data-tex="= 2^{-53}"></span>
+    <span class="val">unit roundoff of float64</span>
+
+    <span class="lhs" data-tex="\alpha"></span>
+    <span data-tex="= 53 - \beta"></span>
+    <span class="val" id="alpha-value"></span>
+
+    <hr class="sep">
+    <div class="panel-title">splitting A and B</div>
+    <span class="lhs" data-tex="D"></span>
+    <span data-tex="= \text{Split\_Mat}(A)"></span>
+    <span class="val">A split by rows</span>
+
+    <span class="lhs" data-tex="A"></span>
+    <span data-tex="= \textstyle\sum_{r=1}^{n_A} D^{(r)}"></span>
+    <span class="val" id="nA-value"></span>
+
+    <span class="lhs" data-tex="E"></span>
+    <span data-tex="= \text{Split\_Mat}(B^T)^T"></span>
+    <span class="val">B split by columns</span>
+
+    <span class="lhs" data-tex="B"></span>
+    <span data-tex="= \textstyle\sum_{s=1}^{n_B} E^{(s)}"></span>
+    <span class="val" id="nB-value"></span>
+
+    <hr class="sep">
+    <div class="panel-title">exact product</div>
+    <span class="lhs" data-tex="AB"></span>
+    <span data-tex="= \textstyle\sum_{r=1}^{n_A} \sum_{s=1}^{n_B} \mathrm{fl}\big(D^{(r)} E^{(s)}\big)"></span>
+    <span class="val" id="products-value"></span>
+  </div>
+
+  <h2>A = D<sup>(1)</sup> + D<sup>(2)</sup> + … &nbsp;(split by rows)</h2>
+  <div class="tiles" id="tilesA"></div>
+
+  <h2>B = E<sup>(1)</sup> + E<sup>(2)</sup> + … &nbsp;(split by columns)</h2>
+  <div class="tiles" id="tilesB"></div>
+  <p class="caption">
+    A and B are shaded by exponent (darker = larger). Every row of A spans the same
+    number of bits, rotated so each column mixes large and small entries; likewise every
+    column of B. A's slices are bands along its rows, B's along its columns.
+  </p>
+
+  <h2>The n<sub>A</sub> × n<sub>B</sub> products D<sup>(r)</sup> E<sup>(s)</sup></h2>
+  <svg id="products"></svg>
+  <p class="caption">
+    One cell per product, shaded by the fraction of its entries that are nonzero. Each
+    fl(D<sup>(r)</sup> E<sup>(s)</sup>) is exact, and all of them add up to AB exactly.
+    Products that are entirely zero (empty cells) are where the paper's sparse storage pays off.
+  </p>
+
+  <h2>Slice counts vs span</h2>
+  <svg id="chart" width="100%"></svg>
+  <p class="caption">
+    n<sub>A</sub> depends only on A's row spans and n<sub>B</sub> only on B's column spans,
+    each growing about one slice per α bits. The work is n<sub>A</sub> · n<sub>B</sub> matrix
+    products, so it grows with the product of the two.
+  </p>
+
+  <script>
+    // n×n matrices with random 53-bit significands. Every row of A spreads its
+    // exponents evenly around 0 over spanA bits, rotated by the row index; every column of B
+    // does the same over spanB bits.
+    function makeA(n, span, seed) {
+      const rng = mulberry32(seed);
+      return Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, k) =>
+        randomSignificand(rng) * 2 ** spreadExponent((k + i) % n, n, span)));
+    }
+    function makeB(n, span, seed) {
+      const rng = mulberry32(seed + 1);  // different numbers from A's
+      return Array.from({ length: n }, (_, k) => Array.from({ length: n }, (_, j) =>
+        randomSignificand(rng) * 2 ** spreadExponent((k + j) % n, n, span)));
+    }
+
+    // Algorithm 4's splits: A by rows, B by columns (split Bᵀ by rows, transpose back)
+    const splitA = (A, beta) => splitMat(A, beta).D;
+    const splitB = (B, beta) => splitMat(transpose(B), beta).D.map(transpose);
+
+    const bound = (span, beta) => Math.ceil((span + 53) / (53 - beta));
+    const SPAN_MAX = 300;
+
+    // n_A × n_B grid, each cell shaded by how much of D(r) E(s) is nonzero
+    function drawProducts(C, nA, nB) {
+      const CELL = 24, L = 40, T = 30;
+      let svg = `<text x="${L + nB * CELL / 2}" y="12" text-anchor="middle">s (slice of B)</text>`;
+      svg += `<text x="10" y="${T + nA * CELL / 2}" text-anchor="middle" transform="rotate(-90 10 ${T + nA * CELL / 2})">r (slice of A)</text>`;
+      for (let s = 0; s < nB; s++) {
+        svg += `<text x="${L + s * CELL + CELL / 2}" y="${T - 4}" text-anchor="middle">${s + 1}</text>`;
+      }
+      for (let r = 0; r < nA; r++) {
+        svg += `<text x="${L - 4}" y="${T + r * CELL + CELL / 2 + 4}" text-anchor="end">${r + 1}</text>`;
+        for (let s = 0; s < nB; s++) {
+          const entries = C[r][s].flat();
+          const nonzero = entries.filter(v => v !== 0).length;
+          svg += `<rect x="${L + s * CELL}" y="${T + r * CELL}" width="${CELL - 2}" height="${CELL - 2}"
+                    fill="#2a78d6" fill-opacity="${nonzero / entries.length}" stroke="#ccc">
+                    <title>D(${r + 1}) E(${s + 1}): ${nonzero} of ${entries.length} entries nonzero</title></rect>`;
+        }
+      }
+      const el = document.getElementById("products");
+      const w = L + nB * CELL + 10, h = T + nA * CELL + 10;
+      el.setAttribute("width", w);
+      el.setAttribute("height", h);
+      el.setAttribute("viewBox", `0 0 ${w} ${h}`);
+      el.innerHTML = svg;
+    }
+
+    let seed = 1;
+
+    function render() {
+      const n = Number(document.getElementById("n").value);
+      const spanA = Number(document.getElementById("spanA").value);
+      const spanB = Number(document.getElementById("spanB").value);
+      for (const id of ["n", "spanA", "spanB"]) {
+        document.getElementById(`${id}-value`).textContent = document.getElementById(id).value;
+      }
+
+      const A = makeA(n, spanA, seed), B = makeB(n, spanB, seed);
+      const beta = betaFor(n);
+      const D = splitA(A, beta), E = splitB(B, beta);
+      const C = D.map(Dr => E.map(Es => matmul(Dr, Es)));  // C[r][s] = fl(D(r) E(s))
+
+      // exact checks: each fl(D(r) E(s)) against its exact product, and the
+      // sum of all of them against the exact AB
+      const exactDot = (X, Y, i, j) => X[i].reduce((sum, x, k) => sum + exactProduct(x, Y[k][j]), 0n);
+      const eachOk = D.every((Dr, r) => E.every((Es, s) =>
+        C[r][s].every((row, i) => row.every((c, j) => exact(c) === exactDot(Dr, Es, i, j)))));
+      const sumOk = A.every((row, i) => row.every((_, j) =>
+        C.flat().reduce((sum, Crs) => sum + exact(Crs[i][j]), 0n) === exactDot(A, B, i, j)));
+
+      const set = (id, html) => document.getElementById(id).innerHTML = html;
+      set("beta-value", `⌈(53 + log₂ ${n}) / 2⌉ = ${beta}`);
+      set("alpha-value", `53 − ${beta} = ${53 - beta} bits each slice holds`);
+      set("nA-value", `n<sub>A</sub> = ${D.length}`);
+      set("nB-value", `n<sub>B</sub> = ${E.length}`);
+      set("products-value", `n<sub>A</sub> · n<sub>B</sub> = ${D.length * E.length} products\n` +
+        `each product exact: ${eachOk ? "✓" : "✗"}\n` +
+        `sum = AB exactly:   ${sumOk ? "✓" : "✗"}`);
+
+      document.getElementById("tilesA").innerHTML = sliceTiles("D", A, D, "A");
+      document.getElementById("tilesB").innerHTML = sliceTiles("E", B, E, "B");
+      drawProducts(C, D.length, E.length);
+
+      // n_A over every A row span, n_B over every B column span
+      const spans = Array.from({ length: SPAN_MAX + 1 }, (_, s) => s);
+      const nAs = spans.map(s => splitA(makeA(n, s, seed), beta).length);
+      const nBs = spans.map(s => splitB(makeB(n, s, seed), beta).length);
+      drawStepChart(document.getElementById("chart"), {
+        xMax: SPAN_MAX, xLabel: "A row span / B column span (bits)", yLabel: "slices",
+        series: [
+          { ys: nAs, color: "#2a78d6", label: "n_A vs A's row span" },
+          { ys: nBs, color: "#eb6834", label: "n_B vs B's column span" },
+          { ys: spans.map(s => bound(s, beta)), color: "#999", dash: true, label: `⌈(span + 53) / α⌉, α = ${53 - beta}` },
+        ],
+        markers: [
+          { x: spanA, y: nAs[spanA], color: "#2a78d6" },
+          { x: spanB, y: nBs[spanB], color: "#eb6834" },
+        ],
+      });
+    }
+
+    renderTex();
+    for (const id of ["n", "spanA", "spanB"]) document.getElementById(id).addEventListener("input", render);
+    document.getElementById("reshuffle").addEventListener("click", () => {
+      seed = Math.floor(Math.random() * 2 ** 31);
+      render();
+    });
+    render();
+  </script>
+</body>
+</html>

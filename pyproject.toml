@@ -1,7 +1,7 @@
 [project]
-name = "playground"
+name = "wcp-presentation"
 version = "0.1.0"
-description = "Add your description here"
+description = "Slides and figures for the WCP presentation"
 readme = "README.md"
 authors = [
     { name = "ajbyrnes", email = "ajbyrne2@uic.edu" }
@@ -13,9 +13,5 @@ dependencies = [
     "plotly>=7.1.0",
 ]
 
-[project.scripts]
-playground = "playground:main"
-
-[build-system]
-requires = ["uv_build>=0.12.10,<0.13.0"]
-build-backend = "uv_build"
+[tool.uv]
+package = false

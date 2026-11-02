@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ExtractVector</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js"></script>
+  <link rel="stylesheet" href="bits.css">
+  <script src="bits.js"></script>
+</head>
+<body>
+  <h1>ExtractVector(x, M)</h1>
+
+  <!-- data-tex cells are rendered once by KaTeX; .val cells are filled in by render(),
+       one line per element where the quantity is a vector -->
+  <div id="equations">
+    <div class="xpick">
+      <label>x = <input id="x" value="100, 10, 1, 0.1" size="36"></label>
+      <select id="presets"><option value="">pick x…</option></select>
+      <button id="random">random x</button>
+    </div>
+
+    <span class="lhs" data-tex="x_i"></span>
+    <span data-tex="= \pm\, d_i \times 10^{k_i}, \quad d_i \in [1, 10)"></span>
+    <span class="val" id="x-dec-value"></span>
+
+    <span class="lhs" data-tex="x_i"></span>
+    <span data-tex="= \pm\, m_i \times 2^{E_i}, \quad m_i \in [1, 2)"></span>
+    <span class="val" id="x-sig-value"></span>
+
+    <hr class="sep">
+    <span class="lhs" data-tex="\sigma"></span>
+    <span data-tex="= 2^{M} \cdot 2^{\lceil \log_2 \max_i |x_i| \rceil}"></span>
+    <span class="val" id="sigma-value"></span>
+
+    <span class="lhs" data-tex="x_{hi}"></span>
+    <span data-tex="= \mathrm{fl}\big((\sigma + x) - \sigma\big)"></span>
+    <span class="val" id="x_hi-value"></span>
+
+    <span class="lhs" data-tex="x_{lo}"></span>
+    <span data-tex="= \mathrm{fl}(x - x_{hi})"></span>
+    <span class="val" id="x_lo-value"></span>
+
+    <span class="lhs" data-tex="x"></span>
+    <span data-tex="= x_{hi} + x_{lo}"></span>
+    <span class="val" id="x-value"></span>
+  </div>
+
+  <div class="controls">
+    <label>M = <input id="M" type="range" min="0" max="55" value="20"> <span id="M-value"></span></label>
+  </div>
+
+  <svg id="bits" width="100%"></svg>
+
+  <script>
+    // Same steps as splitting.py's extract_vector: one σ from the largest
+    // |x_i|, then the same + and - applied to every element.
+    function extractVector(x, M) {
+      const maxAbs = Math.max(...x.map(Math.abs));
+      const e = Math.ceil(Math.log2(maxAbs));
+      const sigma = 2 ** M * 2 ** e;
+      const s = x.map(v => sigma + v);  // kept separate so we can see where each rounded
+      const x_hi = s.map(si => si - sigma);
+      const x_lo = x.map((v, i) => v - x_hi[i]);
+      return { e, sigma, s, x_hi, x_lo };
+    }
+
+    // "100, 10 1" → [100, 10, 1]; null if anything isn't a number or all are 0
+    function parseX(text) {
+      const x = text.split(/[\s,]+/).filter(Boolean).map(Number);
+      if (!x.length || !x.every(Number.isFinite) || x.every(v => v === 0)) return null;
+      return x;
+    }
+
+    // one line per element, prefixed with its index
+    const perElement = (vs, format) => vs.map((v, i) => `[${i}] ${format(v)}`).join("\n");
+
+    function render() {
+      const x = parseX(document.getElementById("x").value);
+      const M = Number(document.getElementById("M").value);
+      document.getElementById("M-value").textContent = M;
+
+      if (!x) return;  // nothing to split
+
+      const { e, s, x_hi, x_lo } = extractVector(x, M);
+      const range = bitRange(M => {
+        const r = extractVector(x, M);
+        return { values: [...x, ...r.x_hi, ...r.x_lo], cuts: r.s.map(cutPower) };
+      });
+      // σ is shared, but fl(σ + x_i) can have a smaller exponent than σ when
+      // x_i < 0, so each element gets its own cut (usually they all match).
+      const cuts = s.map(cutPower);
+      const rowsOf = (name, vs, note) =>
+        vs.map((v, i) => ({ name: `${name}[${i}]`, value: v, cut: cuts[i], note: note && note(i) }));
+      const counts = i => {
+        const hiBits = hiBitCount(x[i], cuts[i]);
+        return `${hiBits} ┊ ${53 - hiBits}`;
+      };
+      drawSplit(document.getElementById("bits"), [
+        { op: "",  color: COLORS.x,    rows: rowsOf("x", x, counts) },
+        { op: "=", color: COLORS.x_hi, rows: rowsOf("x_hi", x_hi) },
+        { op: "+", color: COLORS.x_lo, rows: rowsOf("x_lo", x_lo) },
+      ], range, { cut: Math.max(...cuts), text: "← x_hi ┊ x_lo →   (bits per element at right)" });
+
+      const set = (id, html) => document.getElementById(id).innerHTML = html;
+      set("x-dec-value", perElement(x, formatValue));
+      set("x-sig-value", perElement(x, formatSignificand));
+      set("sigma-value", `2<sup>${M}</sup> · 2<sup>${e}</sup> = 2<sup>${M + e}</sup>`);
+      set("x_hi-value", perElement(x_hi, formatValue));
+      set("x_lo-value", perElement(x_lo, formatValue));
+      set("x-value", perElement(x_hi.map((h, i) => h + x_lo[i]), formatValue));
+    }
+
+    renderTex();
+
+    // the cases from floatbits.py's CASES
+    const PRESETS = [
+      ["decade spread", [100, 10, 1, 0.1]],
+      ["powers of two", [8, 4, 2, 1, 0.5]],
+      ["repeating fractions", [0.1, 0.2, 0.3]],
+      ["neighbours of 1", [1 + 2 ** -52, 1, 1 - 2 ** -53]],
+      // 1e8 ≈ 2^27, so the shared cut passes through 1's bits for M = 0..25
+      ["wide magnitude gap", [1e8, 1, -1e8]],
+    ];
+    const xInput = document.getElementById("x");
+    const presets = document.getElementById("presets");
+    for (const [label, v] of PRESETS) presets.add(new Option(label, v.join(", ")));
+
+    // String(v) is the shortest text that reads back as the same double
+    function setX(text) {
+      xInput.value = text;
+      render();
+    }
+    presets.addEventListener("change", () => presets.value && setX(presets.value));
+
+    // Four random elements spread over 2^-10 .. 2^10, so they don't share a
+    // leading bit: that spread is what makes the shared σ interesting.
+    document.getElementById("random").addEventListener("click", () => {
+      const x = Array.from({ length: 4 }, () => {
+        const k = Math.floor(Math.random() * 21) - 10;
+        return (Math.random() < 0.5 ? -1 : 1) * Math.random() * 2 ** k;
+      });
+      setX(x.map(String).join(", "));
+    });
+
+    xInput.addEventListener("input", () => { presets.value = ""; render(); });
+    document.getElementById("M").addEventListener("input", render);
+    render();
+  </script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 interactive visualizers (bits.js): one column per power of two, higher powers
 on the left, filled = 1, outlined = 0, nothing = no bit there.
 
-Run from src/:  ../.venv/bin/python figures.py   → writes figures/*.pdf
+Run: .venv/bin/python figures/scripts/figures.py   → writes figures/static/*.pdf
 """
 import colorsys
 import math
@@ -18,7 +18,7 @@ from matplotlib.transforms import offset_copy
 
 from splitting import beta, extract_scalar, split_mat
 
-OUT = Path(__file__).parent / "figures"
+OUT = Path(__file__).parent.parent / "static"
 
 # Same colors as bits.js. Used with one meaning in every figure:
 # blue = an input, green = bits that are kept, red = bits rounded away.

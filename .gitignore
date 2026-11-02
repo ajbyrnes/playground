@@ -1,1 +1,11 @@
-*.html
+# papers are reference copies, not ours to redistribute
+papers/
+
+# python
+__pycache__/
+.venv/
+
+# quarto render output
+slides/*_files/
+slides/slides.html
+.quarto/
