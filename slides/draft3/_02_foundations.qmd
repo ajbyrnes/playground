@@ -1,0 +1,109 @@
+<!-- LOCKED: Foundations is final. Do not edit. -->
+
+# Foundations {background-color="#eef4fc"}
+
+## Floating-point basics
+
+$$
+\text{value} = \text{mantissa} \times 2^{\text{exponent}}
+$$
+
+$$
+\text{e.g.} \quad 28.016 = 1.751 \times 2^{4}
+$$
+
+. . .
+
+Our discussion is concerned with FP64:
+
+- 53-bit mantissa
+
+- 11-bit exponent
+
+. . .
+
+Max relative error from rounding a real number to FP64:
+
+$$
+2^{-53} \approx 1.11 \times 10^{-16}
+$$
+
+## Floating-point space
+
+![](../figures/static/slides/fp_space.svg){width="100%"}
+
+- **Floating-point space:** Floating-point values are a subset of points on the real number line.
+
+- Density of coverage decreases as magnitude grows
+
+. . .
+
+## Mantissa space: One value
+
+::::: columns
+::: {.column width="28%"}
+<br>
+
+$$x_1 = 1.751 \times 2^{4}$$
+:::
+
+::: {.column width="72%"}
+![](../figures/static/slides/mantissa_space_1.svg){width="100%"}
+:::
+:::::
+
+. . .
+
+**Mantissa space:** Visualization of floating-point mantissas, showing the magnitude of each bit
+
+. . .
+
+One floating-point value: Mantissa space is 53 bits wide.
+
+## Mantissa space: Two values
+
+::::: columns
+::: {.column width="28%"}
+<br>
+
+$$x_1 = 1.751 \times 2^{4}$$ $$x_2 = 1.317 \times 2^{2}$$
+:::
+
+::: {.column width="72%"}
+![](../figures/static/slides/mantissa_space_2.svg){width="100%"}
+:::
+:::::
+
+. . .
+
+**Width:** Distance from the most significant bit of the highest-magnitude value to the least significant bit of the lowest-magnitude value.
+
+. . .
+
+**Magnitude range:** Difference in exponents of the highest- and lowest-magnitude values.
+
+## Mantissa space: Three values
+
+::::: columns
+::: {.column width="28%"}
+<br>
+
+$$x_1 = 1.751 \times 2^{4}$$ $$x_2 = 1.317 \times 2^{2}$$ $$x_3 = 1.092 \times 2^{-51}$$
+:::
+
+::: {.column width="72%"}
+![](../figures/static/slides/mantissa_space_3.svg){width="100%"}
+:::
+:::::
+
+. . .
+
+$x_1$ and $x_2$: Magnitude range = 2, mantissa space width = 55
+
+. . .
+
+$x_1$, $x_2$, and $x_3$: Magnitude range = 55, mantissa space width = 108
+
+. . .
+
+**Larger magnitude range → Wider mantissa space**

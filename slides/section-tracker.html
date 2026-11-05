@@ -1,0 +1,90 @@
+<!-- Section tracker: a small label and a row of dots along the top-left edge,
+     showing which section the current slide is in and how far through it.
+     Live: one fixed element, updated on every slide change (like the slide
+     number). PDF export (?print-pdf): a copy stamped into each printed page.
+     Skips the title slide and the references. -->
+<style>
+  .reveal .section-tracker {
+    position: absolute;
+    left: 16px;
+    top: 10px;
+    justify-content: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    line-height: 1;
+    color: #8a8f99;
+    font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
+    pointer-events: none;
+    z-index: 31;
+  }
+  .reveal .section-tracker:empty { display: none; }
+  .reveal .section-tracker .dots { display: flex; gap: 4px; }
+  .reveal .section-tracker .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1px solid #b5bac3;
+    box-sizing: border-box;
+  }
+  .reveal .section-tracker .dot.done { background: #c9ced6; border-color: #c9ced6; }
+  .reveal .section-tracker .dot.here { background: #1c4e8a; border-color: #1c4e8a; }
+</style>
+<script>
+  (function () {
+    var info = new Map();   // slide element -> {name, i, n}
+
+    function index() {
+      document.querySelectorAll(".reveal .slides > section").forEach(function (stack) {
+        var head = stack.querySelector(":scope > section.level1 h1");
+        if (!head) return;                       // title slide
+        var name = head.textContent.trim();
+        var slides = Array.prototype.filter.call(
+          stack.querySelectorAll(":scope > section.slide"),
+          function (s) { return s.id !== "references"; });
+        slides.forEach(function (s, i) { info.set(s, { name: name, i: i, n: slides.length }); });
+      });
+    }
+
+    function fill(el, slide) {
+      el.innerHTML = "";
+      var t = info.get(slide);
+      if (!t) return;
+      var label = document.createElement("span");
+      label.textContent = t.name;
+      var dots = document.createElement("span");
+      dots.className = "dots";
+      for (var j = 0; j < t.n; j++) {
+        var d = document.createElement("span");
+        d.className = "dot" + (j < t.i ? " done" : j === t.i ? " here" : "");
+        dots.appendChild(d);
+      }
+      el.appendChild(label);
+      el.appendChild(dots);
+    }
+
+    function setup() {
+      index();
+      var live = document.createElement("div");
+      live.className = "section-tracker";
+      document.querySelector(".reveal").appendChild(live);
+      fill(live, Reveal.getCurrentSlide());
+      Reveal.on("slidechanged", function (e) { fill(live, e.currentSlide); });
+      Reveal.on("pdf-ready", function () {
+        live.remove();
+        document.querySelectorAll(".reveal .pdf-page").forEach(function (page) {
+          var slide = page.querySelector("section.slide");
+          if (!slide || !info.has(slide)) return;
+          var el = document.createElement("div");
+          el.className = "section-tracker";
+          fill(el, slide);
+          page.appendChild(el);
+        });
+      });
+    }
+
+    if (Reveal.isReady()) setup();
+    else Reveal.on("ready", setup);
+  })();
+</script>

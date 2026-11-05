@@ -1,0 +1,94 @@
+# Ozaki in Applications {background-color="#eef4fc"}
+
+## Early examples
+
+Until this point, every evaluation has been on synthetic workloads. Are there matrix products in actual applications that would benefit from emulation?
+
+::::: columns
+::: {.column .fragment width="50%"}
+**Quantum circuit simulation** [@ootomo2024]
+
+2–4.85× faster than cuBLAS ZGEMM, same or better accuracy
+
+[(Random unitary circuits: "toy models")]{style="font-size: 0.7em; color: #666"}
+:::
+
+::: {.column .fragment width="50%"}
+**QR factorization** [@schwarz2026]
+
+Without ADP: 5× faster, error 2.9e-12
+
+With ADP: 3.5× faster, error 7e-16
+:::
+:::::
+
+::: fragment
+**QR is technically an application of matrix multiplication, but not a scientific application.**
+:::
+
+## Brower et al. (2026)
+
+*Mixed-Precision Ab Initio Tensor Network State Methods Adapted for NVIDIA Blackwell Technology via Emulated FP64 Arithmetic*
+
+::::: columns
+::: {.column .fragment width="60%"}
+[Cole Brower, Samuel Rodriguez Bernabeu, Jeff Hammond, John Gunnels [NVIDIA]{style="color: #666"}\
+Sotiris S. Xantheas [Pacific Northwest National Laboratory; University of Washington]{style="color: #666"}\
+Martin Ganahl [SandboxAQ]{style="color: #666"}\
+Andor Menczer, Örs Legeza [Wigner Research Centre for Physics]{style="color: #666"}]{style="font-size: 0.6em"}
+
+Published in *Journal of Chemical Theory and Computation*, 2026 [@brower2026]
+:::
+
+::: {.column .fragment width="40%"}
+::: {style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1em; margin-top: 1.2em; background: #eef4fc"}
+**Ozaki emulation in an actual scientific application**
+:::
+:::
+:::::
+
+## DMRG
+
+**DMRG:** Iterative algorithm for finding the lowest-energy state of a molecule
+
+. . .
+
+Every iteration: Many DGEMMs, some in rounding-sensitive steps (eigensolver, SVD)
+
+. . .
+
+Higher bond dimension $D$ → More accurate, but more memory and compute
+
+## Accuracy
+
+::::: columns
+::: {.column width="50%"}
+![](../figures/papers/brower/fig01.png){height="405px" fig-align="center"}
+
+[**Small system:** 6 and 4 slices track FP64; 2 miss the target, and 3 is borderline.]{style="font-size: 0.65em"}
+:::
+
+::: {.column .fragment width="50%"}
+![](../figures/papers/brower/fig03.png){height="405px" fig-align="center"}
+
+[**Large system:** 4 and 6 slices agree with FP64 over 700 iterations.]{style="font-size: 0.65em"}
+:::
+:::::
+
+## Performance
+
+::::: columns
+::: {.column width="55%"}
+![](../figures/papers/brower/fig04.png){width="100%"}
+:::
+
+::: {.column width="45%"}
+::: fragment
+**Eager mode:** Emulation is slower than native FP64, even with 2 slices
+:::
+
+::: fragment
+This is the smallest problem they tested. At small sizes, the overhead of emulation can dominate.
+:::
+:::
+:::::

@@ -1,0 +1,47 @@
+/*-- scss:defaults --*/
+// UIC on a Flatly baseline (fonts/feel from Bootswatch Flatly, colors from UIC)
+$uic-navy: #001E62;
+$uic-red:  #D50032;
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+
+$body-bg: #ffffff;
+$body-color: #343a40;
+$link-color: $uic-red;
+$font-family-sans-serif: Lato, "Segoe UI", Roboto, sans-serif;
+$presentation-heading-font: Lato, "Segoe UI", Roboto, sans-serif;
+$presentation-heading-color: $uic-navy;
+$presentation-heading-text-transform: none;
+$presentation-font-size-root: 40px;
+
+/*-- scss:rules --*/
+.reveal h1, .reveal h2, .reveal h3,
+.reveal section.has-light-background h1,
+.reveal section.has-light-background h2 {
+  color: $uic-navy;
+  font-weight: 700;
+}
+
+// Section header slides: red accent bar above the title
+.reveal section.level1 h1::before {
+  content: "";
+  display: block;
+  width: 3em;
+  height: 6px;
+  margin: 0 0 0.4em;
+  background: $uic-red;
+}
+
+// Title slide
+.reveal .title-slide h1.title { color: $uic-navy; }
+.reveal .quarto-title-block .subtitle { color: $uic-red; }
+.reveal .title-slide .institute,
+.reveal .title-slide .date { color: #6c757d; }
+
+.reveal table thead th { border-bottom: 2px solid $uic-navy; }
+.reveal .slide-number { color: $uic-navy; background: transparent; }
+.reveal .progress { color: $uic-red; }
+
+// Flatly: solid navy band under slide titles, the way Flatly does its navbar
+.reveal h2 { border-bottom: 4px solid $uic-navy; padding-bottom: 0.15em; display: inline-block; }
+.reveal strong { color: $uic-navy; }

@@ -1,0 +1,41 @@
+---
+title: "The Ozaki Scheme"
+subtitle: "Emulating FP64 matrix multiplication on low-precision hardware"
+author: "A. J. Byrnes"
+institute: "University of Illinois Chicago"
+date: last-modified
+format:
+  revealjs:
+    theme: [simple, themes/uic-cosmo.scss]
+    slide-number: c/t
+    width: 1280
+    height: 720
+    html-math-method: mathjax
+    center-title-slide: true
+    transition: none
+    preview-links: false
+    pdf-separate-fragments: false
+    include-after-body: section-tracker.html
+bibliography: references.bib
+---
+
+{{< include draft3/01_intro.md >}}
+
+{{< include draft3/_02_foundations.qmd >}}
+
+{{< include draft3/03_ozaki-i.md >}}
+
+{{< include draft3/04_ozimmu.md >}}
+
+{{< include draft3/05_adp.md >}}
+
+{{< include draft3/06_applications.md >}}
+
+{{< include draft3/_07_discussion.qmd >}}
+
+{{< include draft3/_08_conclusion.qmd >}}
+
+## References {.smaller .scrollable}
+
+::: {#refs}
+:::

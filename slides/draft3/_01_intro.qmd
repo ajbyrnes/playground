@@ -1,0 +1,37 @@
+# Intro {background-color="#eef4fc"}
+
+## Why the Ozaki scheme?
+
+The TOP500 ranks supercomputers by their performance on double-precision LINPACK, and it remains the dominant way the HPC community measures itself [@top500; @dongarra1987linpack].
+
+. . .
+
+As hardware shifts to meet AI demand, support for high-precision workloads may substantially decrease. This is not hypothetical:
+
+::: {style="font-size: 0.6em"}
+| GPU | Year | FP64 Vector (TFLOP/s) | FP64 Tensor Core (TFLOP/s) |
+|:----|:----:|----:|----:|
+| V100 | 2017 | 7.8 | — |
+| A100 | 2020 | 9.7 | 19.5 |
+| H100 | 2022 | 34 | 67 |
+| B200 | 2024 | 37 | 37 |
+| **B300** | **2025** | **1.3** | **1.3** |
+:::
+
+## Emulation
+
+**High-precision emulation:** Use the abundant low-precision hardware on modern GPUs to get results equivalent in accuracy to native FP64. The method put forward for FP64 emulation is the Ozaki scheme [@ozaki2012].
+
+. . .
+
+::: {style="font-size: 0.8em"}
+**Moderate:** Emulation is a useful tool where it is useful, but FP64 units remain the baseline.
+
+**Radical:** "FP8 is all you need" (Satoshi Matsuoka): Low-precision hardware can and should subsume the role of native FP64.
+
+**Skeptical:** Performance hinges on the hardware, and accuracy depends on tunable parameters and the input matrices.
+:::
+
+. . .
+
+**Goal:** Trace the development of the Ozaki scheme, and consider what each work tells us about when it can or should be used.

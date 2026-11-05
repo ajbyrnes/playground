@@ -1,0 +1,244 @@
+% Citations for the slides. Prior-work references are taken from the
+% reference list of Ozaki et al. (2012), keeping their numbering in comments.
+
+@article{ozaki2012,
+  author  = {Ozaki, Katsuhisa and Ogita, Takeshi and Oishi, Shin'ichi and Rump, Siegfried M.},
+  title   = {Error-free transformations of matrix multiplication by using fast routines of matrix multiplication and its applications},
+  journal = {Numerical Algorithms},
+  volume  = {59},
+  number  = {1},
+  pages   = {95--118},
+  year    = {2012}
+}
+
+% ---- "a multiple-precision library" (Ozaki et al. refs [2, 7, 14, 15]) ----
+
+@article{bailey1995,
+  author  = {Bailey, David H.},
+  title   = {A {Fortran}-90 based multiprecision system},
+  journal = {ACM Transactions on Mathematical Software},
+  volume  = {21},
+  number  = {4},
+  pages   = {379--387},
+  year    = {1995}
+}
+
+@article{li2002xblas,
+  author  = {Li, Xiaoye S. and Demmel, James W. and Bailey, David H. and Henry, Greg and Hida, Yozo and Iskandar, Jimmy and Kahan, William and Kang, Suh Y. and Kapur, Anil and Martin, Michael C. and Thompson, Brandon J. and Tung, Teresa and Yoo, Daniel J.},
+  title   = {Design, implementation and testing of extended and mixed precision {BLAS}},
+  journal = {ACM Transactions on Mathematical Software},
+  volume  = {28},
+  number  = {2},
+  pages   = {152--205},
+  year    = {2002}
+}
+
+@misc{mpfr,
+  title        = {The {MPFR} Library},
+  howpublished = {\url{http://www.mpfr.org/}},
+  note         = {Accessed 7 Feb 2010},
+  year         = {2010}
+}
+
+@misc{exflib,
+  author       = {Fujiwara, Hiroshi},
+  title        = {exflib: Extend precision floating-point arithmetic library},
+  howpublished = {\url{http://www-an.acs.i.kyoto-u.ac.jp/~fujiwara/exflib/exflib-index.html}},
+  note         = {Accessed 7 Feb 2010},
+  year         = {2010}
+}
+
+% ---- "an accurate algorithm for sum and dot product" (Ozaki et al. refs [4, 9, 11, 12]) ----
+
+@article{demmel2003,
+  author  = {Demmel, James and Hida, Yozo},
+  title   = {Accurate and efficient floating point summation},
+  journal = {SIAM Journal on Scientific Computing},
+  volume  = {25},
+  number  = {4},
+  pages   = {1214--1248},
+  year    = {2003}
+}
+
+@article{ogita2005,
+  author  = {Ogita, Takeshi and Rump, Siegfried M. and Oishi, Shin'ichi},
+  title   = {Accurate sum and dot product},
+  journal = {SIAM Journal on Scientific Computing},
+  volume  = {26},
+  number  = {6},
+  pages   = {1955--1988},
+  year    = {2005}
+}
+
+@article{rump2008a,
+  author  = {Rump, Siegfried M. and Ogita, Takeshi and Oishi, Shin'ichi},
+  title   = {Accurate floating-point summation part {I}: Faithful rounding},
+  journal = {SIAM Journal on Scientific Computing},
+  volume  = {31},
+  number  = {1},
+  pages   = {189--224},
+  year    = {2008}
+}
+
+@article{rump2008b,
+  author  = {Rump, Siegfried M. and Ogita, Takeshi and Oishi, Shin'ichi},
+  title   = {Accurate floating-point summation part {II}: Sign, {K}-fold faithful and rounding to nearest},
+  journal = {SIAM Journal on Scientific Computing},
+  volume  = {31},
+  number  = {2},
+  pages   = {1269--1302},
+  year    = {2008}
+}
+
+% ---- later work (from the WCP paper's reference list) ----
+
+@inproceedings{mukunoki2020,
+  author    = {Mukunoki, Daichi and Ozaki, Katsuhisa and Ogita, Takeshi and Imamura, Toshiyuki},
+  title     = {{DGEMM} Using Tensor Cores, and Its Accurate and Reproducible Versions},
+  booktitle = {High Performance Computing},
+  publisher = {Springer International Publishing},
+  pages     = {230--248},
+  year      = {2020}
+}
+
+@article{ootomo2024,
+  author  = {Ootomo, Hiroyuki and Ozaki, Katsuhisa and Yokota, Rio},
+  title   = {{DGEMM} on integer matrix multiplication unit},
+  journal = {The International Journal of High Performance Computing Applications},
+  volume  = {38},
+  number  = {4},
+  pages   = {297--313},
+  year    = {2024},
+  doi     = {10.1177/10943420241239588}
+}
+
+@misc{nvidia2025emulation,
+  author       = {{NVIDIA}},
+  title        = {Unlocking Tensor Core Performance with Floating Point Emulation in {cuBLAS}},
+  howpublished = {\url{https://developer.nvidia.com/blog/unlocking-tensor-core-performance-with-floating-point-emulation-in-cublas/}},
+  year         = {2025}
+}
+
+@inproceedings{schwarz2026,
+  author    = {Schwarz, Angelika and Anders, Anton and Brower, Cole and Bayraktar, Harun and Gunnels, John and Clark, Kate and Xu, RuQing G. and Rodriguez, Samuel and Cayrols, Sebastien and Tabaszewski, Pawel and Podlozhnyuk, Victor},
+  title     = {Guaranteed {DGEMM} Accuracy While Using Reduced Precision Tensor Cores Through Extensions of the {Ozaki} Scheme},
+  booktitle = {Proceedings of the Supercomputing Asia and International Conference on High Performance Computing in Asia Pacific Region (SCA/HPCAsia '26)},
+  publisher = {Association for Computing Machinery},
+  pages     = {91--101},
+  year      = {2026},
+  doi       = {10.1145/3773656.3773670}
+}
+
+@misc{demmel2026grade,
+  author       = {Demmel, James and others},
+  title        = {How to grade the accuracy of the {BLAS}},
+  howpublished = {arXiv preprint arXiv:2609.12307},
+  year         = {2026}
+}
+
+@article{brower2026,
+  author  = {Brower, Cole and Rodriguez Bernabeu, Samuel and Hammond, Jeff and Gunnels, John and Xantheas, Sotiris S. and Ganahl, Martin and Menczer, Andor and Legeza, {\"O}rs},
+  title   = {Mixed-Precision Ab Initio Tensor Network State Methods Adapted for {NVIDIA} {Blackwell} Technology via Emulated {FP64} Arithmetic},
+  journal = {Journal of Chemical Theory and Computation},
+  volume  = {22},
+  number  = {13},
+  pages   = {6275--6282},
+  year    = {2026},
+  doi     = {10.1021/acs.jctc.6c00203}
+}
+
+% ---- Intro (from the WCP paper's references [1, 2]) ----
+
+@misc{top500,
+  author       = {Meuer, Hans W. and others},
+  title        = {{TOP500} Supercomputing Sites},
+  howpublished = {\url{https://www.top500.org}},
+  note         = {Accessed: 2026-10-26},
+  year         = {2026}
+}
+
+@inproceedings{dongarra1987linpack,
+  author    = {Dongarra, Jack J.},
+  title     = {The {LINPACK} Benchmark: An Explanation},
+  booktitle = {Supercomputing, 1st International Conference, Athens, Greece, June 8--12, 1987, Proceedings},
+  editor    = {Houstis, Elias N. and Papatheodorou, Theodore S. and Polychronopoulos, Constantine D.},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {297},
+  pages     = {456--474},
+  publisher = {Springer},
+  year      = {1987},
+  doi       = {10.5555/73950.73977}
+}
+
+@article{menczer2025hybrid,
+  author  = {Menczer, Andor and Legeza, {\"O}rs},
+  title   = {Massively Parallel Tensor Network State Algorithms on Hybrid {CPU-GPU} Based Architectures},
+  journal = {Journal of Chemical Theory and Computation},
+  volume  = {21},
+  pages   = {1572--1587},
+  year    = {2025},
+  doi     = {10.1021/acs.jctc.4c00661}
+}
+
+@misc{menczer2023su2,
+  author        = {Menczer, Andor and Legeza, {\"O}rs},
+  title         = {Boosting the Effective Performance of Massively Parallel Tensor Network State Algorithms on Hybrid {CPU-GPU} Based Architectures via Non-{Abelian} Symmetries},
+  year          = {2023},
+  eprint        = {2309.16724},
+  archivePrefix = {arXiv},
+  doi           = {10.48550/arXiv.2309.16724}
+}
+
+@misc{eadline2025ozaki,
+  author       = {Eadline, Doug},
+  title        = {Have You Heard About the {Ozaki} Scheme? {You} Will},
+  howpublished = {HPCwire},
+  year         = {2025},
+  month        = apr,
+  url          = {https://www.hpcwire.com/2025/04/17/have-you-heard-about-the-ozaki-scheme-you-will}
+}
+
+@misc{morgan2026tacc,
+  author       = {Prickett Morgan, Timothy},
+  title        = {{TACC} Explores Mixed Precision and {FP64} Emulation for {HPC} with {Horizon}},
+  howpublished = {The Next Platform},
+  year         = {2026},
+  month        = feb,
+  url          = {https://www.nextplatform.com/hpc/2026/02/03/tacc-explores-mixed-precision-and-fp64-emulation-for-hpc-with-horizon/4092147}
+}
+
+@misc{woodie2026genesis,
+  author       = {Woodie, Alex},
+  title        = {Genesis Mission Will Lean Heavily on {Ozaki} Scheme for {FP64} Capability},
+  howpublished = {HPCwire},
+  year         = {2026},
+  month        = feb,
+  url          = {https://www.hpcwire.com/2026/02/17/genesis-mission-will-lean-heavily-on-ozaki-scheme-for-fp64-capability}
+}
+
+@misc{woodie2026amd,
+  author       = {Woodie, Alex},
+  title        = {{AMD} Hints at Big {FP64} Increases in {MI430X} {GPU} as {Ozaki} Underwhelms},
+  howpublished = {HPCwire},
+  year         = {2026},
+  month        = mar,
+  url          = {https://www.hpcwire.com/2026/03/13/amd-hints-at-big-fp64-increases-in-mi430x-gpu-as-ozaki-underwelms}
+}
+
+@misc{eadline2026matsuoka,
+  author       = {Eadline, Doug},
+  title        = {{HPC} Precision Wars: {Satoshi Matsuoka} Plants the {Ozaki} Flag},
+  howpublished = {HPCwire},
+  year         = {2026},
+  month        = jun,
+  url          = {https://www.hpcwire.com/2026/06/15/hpc-precision-wars-satoshi-matsuoka-plants-the-ozaki-flag}
+}
+
+@misc{woodie2026fp8,
+  author       = {Woodie, Alex},
+  title        = {{FP8} or {FP64}? {AMD} Says It Will Give Scientists What They Need},
+  howpublished = {HPCwire},
+  year         = {2026},
+  month        = jun,
+  url          = {https://www.hpcwire.com/2026/06/17/fp8-or-fp64-amd-says-it-will-give-scientists-what-they-need}
+}

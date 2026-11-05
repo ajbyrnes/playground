@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="slides_draft3_litera_files/libs/clipboard/clipboard.min.js"></script>
+<script src="slides_draft3_litera_files/libs/quarto-html/tabby.min.js"></script>
+<script src="slides_draft3_litera_files/libs/quarto-html/popper.min.js"></script>
+<script src="slides_draft3_litera_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="slides_draft3_litera_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="slides_draft3_litera_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="slides_draft3_litera_files/libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.11.9">
+
+  <meta name="author" content="A. J. Byrnes">
+  <meta name="dcterms.date" content="2026-11-04">
+  <title>The Ozaki Scheme</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="slides_draft3_litera_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="slides_draft3_litera_files/libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="slides_draft3_litera_files/libs/revealjs/dist/theme/quarto-d76dc0df1fbc9ca462482ed805b35625.css">
+  <link href="slides_draft3_litera_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="slides_draft3_litera_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="slides_draft3_litera_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="slides_draft3_litera_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">The Ozaki Scheme</h1>
+  <p class="subtitle">Emulating FP64 matrix multiplication on low-precision hardware</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+A. J. Byrnes
+</div>
+        <p class="quarto-title-affiliation">
+            University of Illinois Chicago
+          </p>
+    </div>
+</div>
+
+  <p class="date">2026-11-04</p>
+</section>
+<section>
+<section id="intro" class="title-slide slide level1 center" data-background-color="#eef4fc">
+<h1>Intro</h1>
+
+</section>
+<section id="fp64-on-new-gpus" class="slide level2">
+<h2>FP64 on new GPUs</h2>
+<div style="font-size: 0.6em">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">GPU</th>
+<th style="text-align: center;">Year</th>
+<th style="text-align: right;">FP64 Vector (TFLOP/s)</th>
+<th style="text-align: right;">FP64 Tensor Core (TFLOP/s)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">V100</td>
+<td style="text-align: center;">2017</td>
+<td style="text-align: right;">7.8</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">A100</td>
+<td style="text-align: center;">2020</td>
+<td style="text-align: right;">9.7</td>
+<td style="text-align: right;">19.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">H100</td>
+<td style="text-align: center;">2022</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">67</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B200</td>
+<td style="text-align: center;">2024</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">37</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>B300</strong></td>
+<td style="text-align: center;"><strong>2025</strong></td>
+<td style="text-align: right;"><strong>1.3</strong></td>
+<td style="text-align: right;"><strong>1.3</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rubin</td>
+<td style="text-align: center;">2026</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">200 (emulated)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><span style="font-size: 0.75em">“The floating-point capability of the platform is not improved – not improved – over the previous generation.” — Jack Dongarra, SC25 <span class="citation" data-cites="woodie2026genesis">(<a href="#/references" role="doc-biblioref" onclick="">Woodie 2026b</a>)</span></span></p>
+<div class="fragment">
+<p><strong>Emulation:</strong> Use the abundant low-precision hardware to get results equivalent to native FP64. The method is the Ozaki scheme <span class="citation" data-cites="ozaki2012">(<a href="#/references" role="doc-biblioref" onclick="">Ozaki et al. 2012</a>)</span>.</p>
+</div>
+</section>
+<section id="various-perspectives" class="slide level2">
+<h2>Various perspectives</h2>
+<p>People who care a lot about FP64 don’t agree on what emulation is for.</p>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.7em 1.4em; margin-top: 0.4em; font-size: 0.6em">
+<div class="fragment" style="border-left: 4px solid #1c4e8a; padding: 0.2em 0.7em">
+<p>“FP8 is All You Need: Debunking Hardware FP64 as the HPC Holy Grail”</p>
+<p><span style="color: #666">Satoshi Matsuoka, RIKEN <span class="citation" data-cites="eadline2026matsuoka">(<a href="#/references" role="doc-biblioref" onclick="">Eadline 2026</a>)</span></span></p>
+</div>
+<div class="fragment" style="border-left: 4px solid #1c4e8a; padding: 0.2em 0.7em">
+<p>“We don’t view this [as a] substitution. These are complementary.”</p>
+<p><span style="color: #666">Darío Gil, U.S. Department of Energy <span class="citation" data-cites="woodie2026genesis">(<a href="#/references" role="doc-biblioref" onclick="">Woodie 2026b</a>)</span></span></p>
+</div>
+<div class="fragment" style="border-left: 4px solid #1c4e8a; padding: 0.2em 0.7em">
+<p>“If there’s a case that this emulation is producing scientifically acceptable results, then suddenly our FP64 cost is now divided by 2X to 3X without actually changing the chip.”</p>
+<p><span style="color: #666">Dan Stanzione, TACC <span class="citation" data-cites="morgan2026tacc">(<a href="#/references" role="doc-biblioref" onclick="">Prickett Morgan 2026</a>)</span></span></p>
+</div>
+<div class="fragment" style="border-left: 4px solid #1c4e8a; padding: 0.2em 0.7em">
+<p>“If you get to wrong answers really fast, that’s not helping anybody. We want to get to right answers fast.”</p>
+<p><span style="color: #666">Joseph George, AMD <span class="citation" data-cites="woodie2026fp8">(<a href="#/references" role="doc-biblioref" onclick="">Woodie 2026a</a>)</span></span></p>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Goal:</strong> Trace the development of the Ozaki scheme, and consider what each work tells us about when it can or should be used.</p>
+<!-- LOCKED: Foundations is final. Do not edit. -->
+</div>
+</section></section>
+<section>
+<section id="foundations" class="title-slide slide level1 center" data-background-color="#eef4fc">
+<h1>Foundations</h1>
+
+</section>
+<section id="floating-point-basics" class="slide level2">
+<h2>Floating-point basics</h2>
+<p><span class="math display">\[
+\text{value} = \text{mantissa} \times 2^{\text{exponent}}
+\]</span></p>
+<p><span class="math display">\[
+\text{e.g.} \quad 28.016 = 1.751 \times 2^{4}
+\]</span></p>
+<div class="fragment">
+<p>Our discussion is concerned with FP64:</p>
+<ul>
+<li><p>53-bit mantissa</p></li>
+<li><p>11-bit exponent</p></li>
+</ul>
+</div>
+<div class="fragment">
+<p>Max relative error from rounding a real number to FP64:</p>
+<p><span class="math display">\[
+2^{-53} \approx 1.11 \times 10^{-16}
+\]</span></p>
+</div>
+</section>
+<section id="floating-point-space" class="slide level2">
+<h2>Floating-point space</h2>
+
+<img data-src="../figures/static/slides/fp_space.svg" style="width:100.0%" class="r-stretch"><ul>
+<li><p><strong>Floating-point space:</strong> Floating-point values are a subset of points on the real number line.</p></li>
+<li><p>Density of coverage decreases as magnitude grows</p></li>
+</ul>
+</section>
+<section id="mantissa-space-one-value" class="slide level2">
+<h2>Mantissa space: One value</h2>
+<div class="columns">
+<div class="column" style="width:28%;">
+<p><br></p>
+<p><span class="math display">\[x_1 = 1.751 \times 2^{4}\]</span></p>
+</div><div class="column" style="width:72%;">
+<p><img data-src="../figures/static/slides/mantissa_space_1.svg" style="width:100.0%"></p>
+</div></div>
+<div class="fragment">
+<p><strong>Mantissa space:</strong> Visualization of floating-point mantissas, showing the magnitude of each bit</p>
+</div>
+<div class="fragment">
+<p>One floating-point value: Mantissa space is 53 bits wide.</p>
+</div>
+</section>
+<section id="mantissa-space-two-values" class="slide level2">
+<h2>Mantissa space: Two values</h2>
+<div class="columns">
+<div class="column" style="width:28%;">
+<p><br></p>
+<p><span class="math display">\[x_1 = 1.751 \times 2^{4}\]</span> <span class="math display">\[x_2 = 1.317 \times 2^{2}\]</span></p>
+</div><div class="column" style="width:72%;">
+<p><img data-src="../figures/static/slides/mantissa_space_2.svg" style="width:100.0%"></p>
+</div></div>
+<div class="fragment">
+<p><strong>Width:</strong> Distance from the most significant bit of the highest-magnitude value to the least significant bit of the lowest-magnitude value.</p>
+</div>
+<div class="fragment">
+<p><strong>Magnitude range:</strong> Difference in exponents of the highest- and lowest-magnitude values.</p>
+</div>
+</section>
+<section id="mantissa-space-three-values" class="slide level2">
+<h2>Mantissa space: Three values</h2>
+<div class="columns">
+<div class="column" style="width:28%;">
+<p><br></p>
+<p><span class="math display">\[x_1 = 1.751 \times 2^{4}\]</span> <span class="math display">\[x_2 = 1.317 \times 2^{2}\]</span> <span class="math display">\[x_3 = 1.092 \times 2^{-51}\]</span></p>
+</div><div class="column" style="width:72%;">
+<p><img data-src="../figures/static/slides/mantissa_space_3.svg" style="width:100.0%"></p>
+</div></div>
+<div class="fragment">
+<p><span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span>: Magnitude range = 2, mantissa space width = 55</p>
+</div>
+<div class="fragment">
+<p><span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>, and <span class="math inline">\(x_3\)</span>: Magnitude range = 55, mantissa space width = 108</p>
+</div>
+<div class="fragment">
+<p><strong>Larger magnitude range → Wider mantissa space</strong></p>
+</div>
+</section></section>
+<section>
+<section id="the-ozaki-scheme" class="title-slide slide level1 center" data-background-color="#eef4fc">
+<h1>The Ozaki Scheme</h1>
+<p><span style="color: #666">Method · Trade-off · Purpose</span></p>
+</section>
+<section id="rounding-in-mantissa-space" class="slide level2">
+<h2>Rounding in mantissa space</h2>
+<p><span style="font-size: 0.7em; color: #666"><strong>Method</strong> → Trade-off → Purpose</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="../figures/static/slides/addition_rounding_d3.svg" class="quarto-figure quarto-figure-center" height="345"></p>
+</figure>
+</div>
+<div class="fragment">
+<p>The result is rounded only if it doesn’t fit in the 53-bit mantissa.</p>
+</div>
+<div class="fragment">
+<p>If the operands have few enough significant bits, the result is exact.</p>
+</div>
+</section>
+<section id="splitting" class="slide level2">
+<h2>Splitting</h2>
+<p><span style="font-size: 0.7em; color: #666"><strong>Method</strong> → Trade-off → Purpose</span></p>
+<p>Rump et al.&nbsp;split a single value <span class="math inline">\(x\)</span> into a high part <span class="math inline">\(x^{(1)}\)</span> and a low part <span class="math inline">\(\underline{x}^{(2)}\)</span> <span class="citation" data-cites="rump2008a">(<a href="#/references" role="doc-biblioref" onclick="">Rump et al. 2008</a>)</span>.</p>
+<p><span class="math display">\[
+x^{(1)} = \text{fl}\big((\sigma + x) - \sigma\big) \qquad \underline{x}^{(2)} = \text{fl}(x - x^{(1)})
+\]</span></p>
+<div class="columns">
+<div class="column" style="width:56%;">
+<p><img data-src="../figures/static/slides/split_scalar_d3.svg" style="width:100.0%"></p>
+</div><div class="column" style="width:44%;">
+<div style="font-size: 0.8em">
+<div class="fragment">
+<p><strong>Splitting factor:</strong> <span class="math inline">\(\sigma\)</span>, a power of 2, parameterized by <span class="math inline">\(M\)</span></p>
+</div>
+<div class="fragment">
+<p><strong>Property:</strong> <span class="math inline">\(x^{(1)}\)</span> has at most <span class="math inline">\(53 - M\)</span> significant bits</p>
+</div>
+</div>
+</div></div>
+</section>
+<section id="decomposition-of-a-product" class="slide level2">
+<h2>Decomposition of a product</h2>
+<p><span style="font-size: 0.7em; color: #666"><strong>Method</strong> → Trade-off → Purpose</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="../figures/static/slides/matmul_dims_d3.svg" class="quarto-figure quarto-figure-center" height="215"></p>
+</figure>
+</div>
+<p>The elements of a matrix product with inner dimension <span class="math inline">\(n\)</span> are dot products between vectors of length <span class="math inline">\(n\)</span>.</p>
+<div class="fragment">
+<p>Each dot product has <span class="math inline">\(n\)</span> multiplications and <span class="math inline">\(n - 1\)</span> additions, where floating-point error can accumulate.</p>
+</div>
+</section>
+<section id="splitting-a-vector" class="slide level2">
+<h2>Splitting a vector</h2>
+<p><span style="font-size: 0.7em; color: #666"><strong>Method</strong> → Trade-off → Purpose</span></p>
+<div class="columns">
+<div class="column" style="width:62%;">
+<p><img data-src="../figures/static/slides/slice_vector_bits_d3.svg" height="340"></p>
+</div><div class="column" style="width:38%;">
+<p><img data-src="../figures/static/slides/slice_vector_slices.svg" style="width:100.0%"></p>
+</div></div>
+<p>Scale <span class="math inline">\(\sigma\)</span> to the largest element of <span class="math inline">\(x\)</span>, then split each remainder again.</p>
+<div class="fragment">
+<p><strong>Result:</strong> <span class="math inline">\(x\)</span> is a sum of slices, each with at most <span class="math inline">\(53 - M\)</span> significant bits</p>
+</div>
+</section>
+<section id="exact-slice-products" class="slide level2">
+<h2>Exact slice products</h2>
+<p><span style="font-size: 0.7em; color: #666"><strong>Method</strong> → Trade-off → Purpose</span></p>
+<p>Split <span class="math inline">\(y\)</span> the same way, and the dot product becomes a sum of slice products:</p>
+<p><span class="math display">\[
+x^T y = \big(x^{(1)} + \cdots + x^{(n_x)}\big)^T \big(y^{(1)} + \cdots + y^{(n_y)}\big) = \sum_{i=1}^{n_x} \sum_{j=1}^{n_y} \underbrace{{x^{(i)}}^T y^{(j)}}_{\text{exact}}
+\]</span></p>
+<div class="fragment">
+<p>Rounding error only accumulates when the slice products are added together.</p>
+</div>
+<div class="fragment">
+<p><strong><span class="math inline">\(x^T y\)</span> is more accurate than if it had been computed directly.</strong></p>
+</div>
+</section>
+<section id="the-ozaki-scheme-1" class="slide level2">
+<h2>The Ozaki scheme</h2>
+<p><span style="font-size: 0.7em; color: #666"><strong>Method</strong> → Trade-off → Purpose</span></p>
+<ol type="1">
+<li class="fragment"><strong>Decompose:</strong> Split <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> into slices, fully or partially</li>
+<li class="fragment"><strong>Multiply:</strong> Slices are standard FP64 matrices, so slice products use standard FP64 matrix multiplication routines</li>
+<li class="fragment"><strong>Accumulate:</strong> Accept rounding error in the sum, or use an accurate summation technique</li>
+</ol>
+</section>
+<section id="trade-off-accuracy-vs.-performance" class="slide level2">
+<h2>Trade-off: Accuracy vs.&nbsp;performance</h2>
+<p><span style="font-size: 0.7em; color: #666">Method → <strong>Trade-off</strong> → Purpose</span></p>
+<div class="columns">
+<div class="column" style="width:67%;">
+<p><img data-src="../figures/static/slides/span_slices_d3.svg" style="width:100.0%"></p>
+</div><div class="column" style="width:33%;">
+<div style="font-size: 0.75em">
+<p>Slices should cover the whole mantissa space. Any part that isn’t covered is represented inexactly.</p>
+<div class="fragment">
+<p><strong>Wider mantissa space requires more slices to cover it, and more slices means more memory overhead and more computation.</strong></p>
+</div>
+</div>
+</div></div>
+</section>
+<section id="test-matrices" class="slide level2">
+<h2>Test matrices</h2>
+<p><span style="font-size: 0.7em; color: #666">Method → <strong>Trade-off</strong> → Purpose</span></p>
+<p>Ozaki et al.&nbsp;generate test matrices with a controlled magnitude range:</p>
+<p><span class="math display">\[
+a_{ij} = \underbrace{(\text{rand} - 0.5)}_{\text{uniform mantissa}} \times \underbrace{e^{\,\phi \cdot \text{randn}}}_{\text{normal exponent}}
+\]</span></p>
+<div class="fragment">
+<p><span class="math inline">\(\phi\)</span> is the parameter controlling magnitude range.</p>
+</div>
+<div class="fragment">
+<p>We’ll keep seeing matrices like these in the later evaluations.</p>
+</div>
+</section>
+<section id="the-trade-off-in-the-results" class="slide level2">
+<h2>The trade-off in the results</h2>
+<p><span style="font-size: 0.7em; color: #666">Method → <strong>Trade-off</strong> → Purpose</span></p>
+<p><span style="font-size: 0.6em"><strong>M1</strong> FP64 · <strong>M2</strong> <code>lssresidual</code> (INTLAB) · <span style="color: #d9480f"><strong>M3–M5</strong> Ozaki scheme, 2, 3, 4 slices</span> · <strong>M6</strong> XBLAS</span></p>
+<div class="columns">
+<div class="column" style="width:56%;">
+<p><span style="font-size: 0.55em"><strong>Accuracy</strong> (maximum componentwise relative error)</span></p>
+<p><img data-src="../figures/papers/ozaki/table03_accmul.png" style="width:100.0%"></p>
+</div><div class="column" style="width:44%;">
+<p><span style="font-size: 0.55em"><strong>Time</strong> relative to standard FP64</span></p>
+<p><img data-src="../figures/papers/ozaki/table04_accmul.png" style="width:100.0%"></p>
+</div></div>
+<div class="fragment">
+<p><span style="font-size: 0.85em"><strong>As <span class="math inline">\(\phi\)</span> increases, the schemes with lower slice counts see more accuracy degradation. More slices take longer.</strong></span></p>
+</div>
+</section>
+<section id="what-it-was-for" class="slide level2">
+<h2>What it was for</h2>
+<p><span style="font-size: 0.7em; color: #666">Method → Trade-off → <strong>Purpose</strong></span></p>
+<p>At this point, the Ozaki scheme is only meant to be an efficient and more accurate way of performing matrix multiplication.</p>
+<div class="fragment">
+<p><strong>Tested on:</strong> Intel Core 2 Duo and Core 2 Extreme, MATLAB, <span class="math inline">\(n = 1000\)</span> and <span class="math inline">\(2000\)</span></p>
+<p><strong>Result:</strong> Accuracy near XBLAS at low <span class="math inline">\(\phi\)</span>, in a much smaller fraction of the time (8–35× faster)</p>
+</div>
+<div class="fragment">
+<p>The evaluations show the Ozaki scheme can be more efficient than other methods for accurate matrix multiplication, though not over a wide range of cases.</p>
+</div>
+</section>
+<section id="a-wrapper-around-matrix-multiplication" class="slide level2">
+<h2>A wrapper around matrix multiplication</h2>
+<p><span style="font-size: 0.7em; color: #666">Method → Trade-off → <strong>Purpose</strong></span></p>
+<p>Slices are regular FP64 matrices, so most of the work can be offloaded to optimized BLAS routines.</p>
+<div class="fragment">
+<p><strong>The Ozaki scheme is essentially a wrapper around DGEMM, transforming one DGEMM call into several.</strong></p>
+</div>
+<div class="fragment">
+<p>This also makes it promising as a method that could be integrated transparently into existing libraries.</p>
+</div>
+</section>
+<section id="takeaways-ozaki-et-al.-2012" class="slide level2">
+<h2>Takeaways: Ozaki et al.&nbsp;(2012)</h2>
+<div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc">
+<p><strong>Role:</strong> A faster way of performing accurate matrix multiplication</p>
+<div class="fragment">
+<p><strong>Trade-off:</strong> Magnitude range determines the slice count, which trades accuracy against performance and memory</p>
+</div>
+</div>
+</section></section>
+<section>
+<section id="ozaki-on-immu" class="title-slide slide level1 center" data-background-color="#eef4fc">
+<h1>Ozaki on IMMU</h1>
+<p><span style="color: #666">Tensor Cores · Integer Slices · New Possibilities</span></p>
+</section>
+<section id="ozaki-is-shaped-like-tensor-cores" class="slide level2">
+<h2>Ozaki is shaped like Tensor Cores</h2>
+<p><span style="font-size: 0.7em; color: #666"><strong>Tensor Cores</strong> → Integer Slices → New Possibilities</span></p>
+<p><strong>Tensor Cores (2018):</strong> Dedicated mixed-precision matrix multiplication circuits. Inputs can be in lower precision than outputs.</p>
+<div class="fragment">
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><img data-src="../figures/static/slides/split_scalar_d3.svg" style="width:100.0%"></p>
+</div><div class="column" style="width:45%;">
+<p><span style="font-size: 0.8em">FP64 slices are deliberately restricted to a fraction of the mantissa (27 of 53 bits here). That headroom exists only so the <em>result</em> can be exact in FP64.</span></p>
+</div></div>
+</div>
+<div class="fragment">
+<p><strong>There’s no reason the slices themselves can’t use smaller formats.</strong></p>
+<p><span style="font-size: 0.7em; color: #666">The first Ozaki scheme on Tensor Cores (2020) used FP16-FP32 cores <span class="citation" data-cites="mukunoki2020">(<a href="#/references" role="doc-biblioref" onclick="">Mukunoki et al. 2020</a>)</span></span></p>
+</div>
+</section>
+<section id="ootomo-et-al.-2024" class="slide level2">
+<h2>Ootomo et al.&nbsp;(2024)</h2>
+<p><span style="font-size: 0.7em; color: #666"><strong>Tensor Cores</strong> → Integer Slices → New Possibilities</span></p>
+<p><em>DGEMM on integer matrix multiplication unit</em></p>
+<p><span style="font-size: 0.6em; color: #666">Hiroyuki Ootomo, Katsuhisa Ozaki, Rio Yokota · <em>The International Journal of High Performance Computing Applications</em>, 2024 <span class="citation" data-cites="ootomo2024">(<a href="#/references" role="doc-biblioref" onclick="">Ootomo et al. 2024</a>)</span></span></p>
+<div class="fragment">
+<div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1em; margin: 0.8em auto 0; background: #eef4fc; width: 70%; text-align: center">
+<p><strong>The Ozaki scheme on integer Tensor Cores (INT8)</strong></p>
+</div>
+</div>
+</section>
+<section id="integer-slices" class="slide level2">
+<h2>Integer slices</h2>
+<p><span style="font-size: 0.7em; color: #666">Tensor Cores → <strong>Integer Slices</strong> → New Possibilities</span></p>
+
+<img data-src="../figures/static/slides/immu_blockfloat.svg" style="width:100.0%" class="r-stretch"><p>Ootomo et al.&nbsp;use a block-float format: Each slice contains integer values aligned to a shared exponent.</p>
+<div class="fragment">
+<p><strong>Exponents are divided out and stored in separate vectors.</strong></p>
+</div>
+</section>
+<section id="the-immu-ozaki-scheme" class="slide level2">
+<h2>The IMMU Ozaki scheme</h2>
+<p><span style="font-size: 0.7em; color: #666">Tensor Cores → <strong>Integer Slices</strong> → New Possibilities</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="../figures/static/slides/immu_product_d3.svg" class="quarto-figure quarto-figure-center" height="200"></p>
+</figure>
+</div>
+<div style="font-size: 0.85em">
+<ol type="1">
+<li class="fragment"><strong>Decompose:</strong> Split into INT8 slices and scaling vectors</li>
+<li class="fragment"><strong>Multiply:</strong> Compute slice products on integer Tensor Cores, then convert products back to FP64 using the shared exponents and scaling vectors</li>
+<li class="fragment"><strong>Accumulate:</strong> Sum the FP64 products</li>
+</ol>
+</div>
+</section>
+<section id="what-the-slices-leave-out" class="slide level2">
+<h2>What the slices leave out</h2>
+<p><span style="font-size: 0.7em; color: #666">Tensor Cores → <strong>Integer Slices</strong> → New Possibilities</span></p>
+<p>With <span class="math inline">\(s\)</span> INT8 slices, the product is only approximated:</p>
+<p><span class="math display">\[
+AB \approx \sum_{i + j \,\le\, s + 1} A^{(i)} B^{(j)}
+\]</span></p>
+<p>Bits below the last slice are cut off, and products with <span class="math inline">\(i + j &gt; s + 1\)</span> are skipped.</p>
+<div class="fragment">
+<p><strong>The main error comes from insufficient splitting, not from rounding.</strong></p>
+</div>
+</section>
+<section id="experimental-setting" class="slide level2">
+<h2>Experimental setting</h2>
+<p><span style="font-size: 0.7em; color: #666">Tensor Cores → Integer Slices → <strong>New Possibilities</strong></span></p>
+<ul>
+<li><strong>Inputs:</strong> Same synthetic matrices as Ozaki et al.&nbsp;(2012), <span class="math inline">\(\phi = 0.1, 1, 2, 4\)</span></li>
+<li><strong>Hardware:</strong> A100, TITAN RTX, RTX A6000, RTX 6000 Ada</li>
+<li><strong>Error:</strong> Maximum componentwise relative error, against a double-double reference</li>
+<li><strong>Variants:</strong> INT8x9, INT8x11, INT8x13 (9, 11, 13 slices)</li>
+</ul>
+</section>
+<section id="results-accuracy" class="slide level2">
+<h2>Results: Accuracy</h2>
+<p><span style="font-size: 0.7em; color: #666">Tensor Cores → Integer Slices → <strong>New Possibilities</strong></span></p>
+<div class="columns">
+<div class="column" style="width:46%;">
+<p><img data-src="../figures/papers/ootomo/fig07.png" style="width:100.0%"></p>
+</div><div class="column" style="width:54%;">
+<p>At low <span class="math inline">\(\phi\)</span>, all variants stay near <span class="math inline">\(10^{-16}\)</span>. As <span class="math inline">\(\phi\)</span> grows, variants with fewer slices degrade first.</p>
+<div class="fragment">
+<p><strong>We see again that lower slice counts improve performance at the cost of accuracy.</strong></p>
+</div>
+</div></div>
+</section>
+<section id="results-throughput" class="slide level2">
+<h2>Results: Throughput</h2>
+<p><span style="font-size: 0.7em; color: #666">Tensor Cores → Integer Slices → <strong>New Possibilities</strong></span></p>
+<div class="columns">
+<div class="column" style="width:66%;">
+<p><img data-src="../figures/papers/ootomo/fig09_labeled.png" style="width:100.0%"></p>
+<div style="font-size: 0.5em; line-height: 1.3; color: #666">
+<p>FP64 : INT8 peak: <strong>A100</strong> 1 : 32 · <strong>TITAN RTX</strong> 1 : 522 · <strong>RTX A6000</strong> 1 : 515 · <strong>RTX 6000 Ada</strong> 1 : 520</p>
+</div>
+</div><div class="column" style="width:34%;">
+<div style="font-size: 0.75em">
+<div class="fragment">
+<p><strong>A100:</strong> At best 8 TFlop/s, vs.&nbsp;DGEMM’s ~17.</p>
+<p><strong>Consumer GPUs:</strong> Up to 3, 4, 6 TFlop/s, vs.&nbsp;DGEMM’s 0.5–1.</p>
+</div>
+<div class="fragment">
+<p><strong>Speedup depends on the hardware. The new implementation let’s us take proper advantage of what the hardware provides.</strong></p>
+</div>
+</div>
+</div></div>
+</section>
+<section id="new-possibilities" class="slide level2">
+<h2>New possibilities</h2>
+<p><span style="font-size: 0.7em; color: #666">Tensor Cores → Integer Slices → <strong>New Possibilities</strong></span></p>
+<p>On some hardware, the Ozaki scheme can be used not just to produce a more accurate matrix product, but to produce it <em>faster</em> than the standard DGEMM routine, and more power efficiently.</p>
+<div class="fragment">
+<p><strong>But:</strong> Testing is still limited to synthetic matrices, in a narrow range of sizes. Speedup only shows up for <em>large enough</em> matrices, and memory overhead is not measured.</p>
+</div>
+</section>
+<section id="more-slices-smaller-slices" class="slide level2">
+<h2>More slices, smaller slices</h2>
+<p><span style="font-size: 0.7em; color: #666">Tensor Cores → Integer Slices → <strong>New Possibilities</strong></span></p>
+<div class="fragment">
+<p><strong>Memory:</strong> INT8 slices hold at most 8 bits, so we need more of them. But one FP64 slice takes the memory of 8 INT8 slices, so we can often come out ahead.</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p><strong>Compute:</strong> Where INT8 throughput is high enough, we can compute some number of INT8 slice products faster than one FP64 matrix multiplication.</p>
+</div>
+</section>
+<section id="usability" class="slide level2">
+<h2>Usability</h2>
+<p><span style="font-size: 0.7em; color: #666">Tensor Cores → Integer Slices → <strong>New Possibilities</strong></span></p>
+<p>Users have to manually tune the slice count, based on:</p>
+<ul>
+<li class="fragment"><strong>Desired accuracy:</strong> Can be difficult to know</li>
+<li class="fragment"><strong>Magnitude range of their matrices:</strong> Easy to measure, but costly at small sizes</li>
+<li class="fragment"><strong>Their hardware:</strong> How many slices are equivalent to one FP64 matrix multiplication</li>
+</ul>
+</section>
+<section id="takeaways-ootomo-et-al.-2024" class="slide level2">
+<h2>Takeaways: Ootomo et al.&nbsp;(2024)</h2>
+<div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc">
+<p><strong>Role:</strong> Faster than the standard DGEMM routine, on some hardware</p>
+<div class="fragment">
+<p><strong>Trade-off:</strong> Unchanged, but with more (smaller) slices, and users still tune the slice count manually</p>
+</div>
+</div>
+</section></section>
+<section>
+<section id="ozaki-with-adp" class="title-slide slide level1 center" data-background-color="#eef4fc">
+<h1>Ozaki with ADP</h1>
+<p><span style="color: #666">FP64 Emulation · ESC · ADP</span></p>
+</section>
+<section id="schwarz-et-al.-2026" class="slide level2">
+<h2>Schwarz et al.&nbsp;(2026)</h2>
+<p><span style="font-size: 0.7em; color: #666"><strong>FP64 Emulation</strong> → ESC → ADP</span></p>
+<p><em>Guaranteed DGEMM Accuracy While Using Reduced Precision Tensor Cores Through Extensions of the Ozaki Scheme</em></p>
+<p><span style="font-size: 0.55em">Angelika Schwarz, Anton Anders, Cole Brower, Harun Bayraktar, John Gunnels, Kate Clark, RuQing G. Xu, Samuel Rodriguez, Sebastien Cayrols, Pawel Tabaszewski, Victor Podlozhnyuk <span style="color: #666">NVIDIA</span> · <em>SCA/HPCAsia ’26</em>, 2026 <span class="citation" data-cites="schwarz2026">(<a href="#/references" role="doc-biblioref" onclick="">Schwarz et al. 2026</a>)</span></span></p>
+<div class="fragment">
+<p>2025: FP64 emulation added to cuBLAS <span class="citation" data-cites="nvidia2025emulation">(<a href="#/references" role="doc-biblioref" onclick="">NVIDIA 2025</a>)</span></p>
+</div>
+<div class="fragment">
+<div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1em; margin: 0.6em auto 0; background: #eef4fc; width: 70%; text-align: center">
+<p><strong>Use emulation when it is beneficial, and standard DGEMM when it is not</strong></p>
+</div>
+</div>
+</section>
+<section id="a-new-goal" class="slide level2">
+<h2>A new goal</h2>
+<p><span style="font-size: 0.7em; color: #666"><strong>FP64 Emulation</strong> → ESC → ADP</span></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Ozaki et al.&nbsp;(2012)</strong></p>
+<p>Goal: As little rounding error as possible</p>
+<p>Slice width chosen so slice products are provably exact</p>
+</div><div class="column fragment" style="width:50%;">
+<p><strong>Schwarz et al.&nbsp;(2026)</strong></p>
+<p>Goal: FP64-equivalent accuracy</p>
+<p>Slices always contain eight significant bits</p>
+</div></div>
+<p><br></p>
+<div class="fragment">
+<p><strong>Aiming for FP64-equivalent accuracy gives us a foothold for reasoning about how many slices we need.</strong></p>
+</div>
+</section>
+<section id="every-slice-uses-all-8-bits" class="slide level2">
+<h2>Every slice uses all 8 bits</h2>
+<p><span style="font-size: 0.7em; color: #666">FP64 Emulation → <strong>ESC</strong> → ADP</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="../figures/static/slides/eight_bit_slices.svg" class="quarto-figure quarto-figure-center" height="330"></p>
+</figure>
+</div>
+<p>Slices are cut from the largest value down, eight bits at a time.</p>
+<div class="fragment">
+<p><strong>How many slices do we actually need?</strong></p>
+</div>
+</section>
+<section id="which-bits-matter" class="slide level2">
+<h2>Which bits matter</h2>
+<p><span style="font-size: 0.7em; color: #666">FP64 Emulation → <strong>ESC</strong> → ADP</span></p>
+<div class="r-stack">
+<p><img data-src="../figures/static/slides/esc_matrix_1.svg" height="290"></p>
+<p><img data-src="../figures/static/slides/esc_matrix_2.svg" class="fragment" height="290"></p>
+<p><img data-src="../figures/static/slides/esc_matrix_3.svg" class="fragment" height="290"></p>
+</div>
+<p>Slices should cover every mantissa bit of the largest values, and of the values behind the largest term.</p>
+<div class="fragment">
+<p><strong>ESC:</strong> <span class="math inline">\(0 + 0 - (-11) = 11\)</span> extra bits</p>
+</div>
+</section>
+<section id="slices-over-53-esc-bits" class="slide level2">
+<h2>Slices over 53 + ESC bits</h2>
+<p><span style="font-size: 0.7em; color: #666">FP64 Emulation → <strong>ESC</strong> → ADP</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="../figures/static/slides/esc_slices.svg" class="quarto-figure quarto-figure-center" height="285"></p>
+</figure>
+</div>
+<p>Slices cover <span class="math inline">\(53 + \text{ESC}\)</span> bits. The rest is dumped.</p>
+<div class="fragment">
+<p><strong>Enough for FP64-equivalent accuracy? Asserted, not proven.</strong></p>
+</div>
+</section>
+<section id="automatic-dynamic-precision-adp" class="slide level2">
+<h2>Automatic Dynamic Precision (ADP)</h2>
+<p><span style="font-size: 0.7em; color: #666">FP64 Emulation → ESC → <strong>ADP</strong></span></p>
+<div class="columns">
+<div class="column" style="width:45%;">
+<p><img data-src="../figures/papers/schwarz/fig08.png" height="470"></p>
+</div><div class="column" style="width:55%;">
+<div style="font-size: 0.8em">
+<div class="fragment">
+<p>Check for Inf/NaN, compute ESC, then decide: Emulate, or fall back to native DGEMM</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p><strong>Goal:</strong> A matrix product at least as accurate as native FP64, in at least the same amount of time</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>How the heuristic decides “emulation slower than FP64?” is not described.</p>
+</div>
+</div>
+</div></div>
+</section>
+<section id="experimental-setting-1" class="slide level2">
+<h2>Experimental setting</h2>
+<p><span style="font-size: 0.7em; color: #666">FP64 Emulation → ESC → <strong>ADP</strong></span></p>
+<ul>
+<li><strong>Inputs:</strong> Demmel et al.’s test matrices, with a parameter <span class="math inline">\(b\)</span> controlling exponent range <span class="citation" data-cites="demmel2026grade">(<a href="#/references" role="doc-biblioref" onclick=""><span class="nocase">Demmel et al.</span> 2026</a>)</span></li>
+<li><strong>Hardware:</strong> GB200, RTX Pro 6000 Blackwell Server Edition</li>
+<li><strong>Accuracy:</strong> Maximum componentwise relative error, against a standard FP64 matrix multiplication</li>
+<li><strong>Variants:</strong> With and without fallback to native DGEMM</li>
+</ul>
+</section>
+<section id="evaluation" class="slide level2">
+<h2>Evaluation</h2>
+<p><span style="font-size: 0.7em; color: #666">FP64 Emulation → ESC → <strong>ADP</strong></span></p>
+<div class="columns">
+<div class="column" style="width:48%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="../figures/papers/schwarz/fig02.png" class="quarto-figure quarto-figure-center" height="300"></p>
+</figure>
+</div>
+</div><div class="column" style="width:52%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="../figures/papers/schwarz/fig06.png" class="quarto-figure quarto-figure-center" height="300"></p>
+</figure>
+</div>
+</div></div>
+<p><span style="font-size: 0.5em; color: #666">FP64 : INT8 peak: <strong>GB200</strong> 1 : 125 · <strong>RTX Pro 6000</strong> 1 : 512</span></p>
+<div class="fragment">
+<p><strong>With fallback:</strong> Accuracy indistinguishable from native DGEMM. Up to 2.3× faster on GB200, and 13.2× on RTX Pro 6000.</p>
+</div>
+</section>
+<section id="what-the-evaluations-tell-us" class="slide level2">
+<h2>What the evaluations tell us</h2>
+<p><span style="font-size: 0.7em; color: #666">FP64 Emulation → ESC → <strong>ADP</strong></span></p>
+<p>The Ozaki scheme is now an explicit alternative to DGEMM, but it is still evaluated the way it was when it was an accurate matrix multiplication scheme.</p>
+<div class="fragment">
+<p><strong>But:</strong> No adversarial inputs, no look inside the fallback heuristic, and memory overhead is still not measured.</p>
+</div>
+</section>
+<section id="impacts-of-implementation" class="slide level2">
+<h2>Impacts of implementation</h2>
+<p><span style="font-size: 0.7em; color: #666">FP64 Emulation → ESC → <strong>ADP</strong></span></p>
+<div class="fragment">
+<p><strong>Accuracy:</strong> Slice products are no longer guaranteed exact, though this only matters for very large matrices</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p><strong>Memory:</strong> Eight significant bits in every slice is the best memory overhead the scheme can get</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p><strong>Usability:</strong> Emulation is invisible to the user… but the decision to emulate is a black box</p>
+</div>
+</section>
+<section id="takeaways-schwarz-et-al.-2026" class="slide level2">
+<h2>Takeaways: Schwarz et al.&nbsp;(2026)</h2>
+<div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc">
+<p><strong>Role:</strong> FP64 emulation, a drop-in replacement for DGEMM used only when it is beneficial</p>
+<div class="fragment">
+<p><strong>Trade-off:</strong> Handled automatically by ESC and ADP, but how ADP makes that call is not described</p>
+</div>
+</div>
+</section></section>
+<section>
+<section id="ozaki-in-applications" class="title-slide slide level1 center" data-background-color="#eef4fc">
+<h1>Ozaki in Applications</h1>
+<p><span style="color: #666">Early Examples · DMRG · Results</span></p>
+</section>
+<section id="early-examples" class="slide level2">
+<h2>Early examples</h2>
+<p><span style="font-size: 0.7em; color: #666"><strong>Early Examples</strong> → DMRG → Results</span></p>
+<p>Until this point, every evaluation has been on synthetic workloads. Are there matrix products in actual applications that would benefit from emulation?</p>
+<div class="columns">
+<div class="column fragment" style="width:50%;">
+<p><strong>Quantum circuit simulation</strong> <span class="citation" data-cites="ootomo2024">(<a href="#/references" role="doc-biblioref" onclick="">Ootomo et al. 2024</a>)</span></p>
+<p>2–4.85× faster than cuBLAS ZGEMM, same or better accuracy</p>
+<p><span style="font-size: 0.7em; color: #666">(Random unitary circuits: “toy models”)</span></p>
+</div><div class="column fragment" style="width:50%;">
+<p><strong>QR factorization</strong> <span class="citation" data-cites="schwarz2026">(<a href="#/references" role="doc-biblioref" onclick="">Schwarz et al. 2026</a>)</span></p>
+<p>Without ADP: 5× faster, error 2.9e-12</p>
+<p>With ADP: 3.5× faster, error 7e-16</p>
+</div></div>
+<div class="fragment">
+<p><strong>QR is technically an application of matrix multiplication, but not a scientific application.</strong></p>
+</div>
+</section>
+<section id="brower-et-al.-2026" class="slide level2">
+<h2>Brower et al.&nbsp;(2026)</h2>
+<p><span style="font-size: 0.7em; color: #666">Early Examples → <strong>DMRG</strong> → Results</span></p>
+<p><em>Mixed-Precision Ab Initio Tensor Network State Methods Adapted for NVIDIA Blackwell Technology via Emulated FP64 Arithmetic</em></p>
+<div class="columns">
+<div class="column fragment" style="width:60%;">
+<p><span style="font-size: 0.6em">Cole Brower, Samuel Rodriguez Bernabeu, Jeff Hammond, John Gunnels <span style="color: #666">NVIDIA</span><br>
+Sotiris S. Xantheas <span style="color: #666">Pacific Northwest National Laboratory; University of Washington</span><br>
+Martin Ganahl <span style="color: #666">SandboxAQ</span><br>
+Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for Physics</span></span></p>
+<p>Published in <em>Journal of Chemical Theory and Computation</em>, 2026 <span class="citation" data-cites="brower2026">(<a href="#/references" role="doc-biblioref" onclick="">Brower et al. 2026</a>)</span></p>
+</div><div class="column fragment" style="width:40%;">
+<div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1em; margin-top: 1.2em; background: #eef4fc">
+<p><strong>Ozaki emulation in an actual scientific application</strong></p>
+</div>
+</div></div>
+</section>
+<section id="dmrg" class="slide level2">
+<h2>DMRG</h2>
+<p><span style="font-size: 0.7em; color: #666">Early Examples → <strong>DMRG</strong> → Results</span></p>
+<p><strong>DMRG:</strong> Iterative algorithm for finding the lowest-energy state of a molecule</p>
+<div class="fragment">
+<p>Every iteration: Many DGEMMs, some in rounding-sensitive steps (eigensolver, SVD)</p>
+</div>
+<div class="fragment">
+<p><strong>Bond dimension <span class="math inline">\(D\)</span>:</strong> Higher is more accurate, but takes more memory and compute</p>
+</div>
+</section>
+<section id="from-d-to-dgemms" class="slide level2">
+<h2>From <span class="math inline">\(D\)</span> to DGEMMs</h2>
+<p><span style="font-size: 0.7em; color: #666">Early Examples → <strong>DMRG</strong> → Results</span></p>
+<p>The matrices in DMRG are <span class="math inline">\(D \times D\)</span>. Symmetries split them into smaller blocks, and the DGEMMs run on the blocks, not on the whole matrix.</p>
+<p><span style="font-size: 0.6em; color: #666">DGEMM structure from the group’s hybrid CPU-GPU implementation <span class="citation" data-cites="menczer2025hybrid">(<a href="#/references" role="doc-biblioref" onclick="">Menczer and Legeza 2025</a>)</span></span></p>
+<div class="fragment">
+<p><strong>A lot of DGEMM work, but it arrives as many DGEMMs much smaller than <span class="math inline">\(D\)</span>.</strong></p>
+</div>
+</section>
+<section id="accuracy" class="slide level2">
+<h2>Accuracy</h2>
+<p><span style="font-size: 0.7em; color: #666">Early Examples → DMRG → <strong>Results</strong></span></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="../figures/papers/brower/fig01.png" class="quarto-figure quarto-figure-center" height="390"></p>
+</figure>
+</div>
+<p><span style="font-size: 0.65em"><strong>Small system:</strong> 6 and 4 slices track FP64; 2 miss the target, and 3 is borderline.</span></p>
+</div><div class="column fragment" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="../figures/papers/brower/fig03.png" class="quarto-figure quarto-figure-center" height="390"></p>
+</figure>
+</div>
+<p><span style="font-size: 0.65em"><strong>Large system:</strong> 4 and 6 slices agree with FP64 over 700 iterations.</span></p>
+</div></div>
+</section>
+<section id="performance" class="slide level2">
+<h2>Performance</h2>
+<p><span style="font-size: 0.7em; color: #666">Early Examples → DMRG → <strong>Results</strong></span></p>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><img data-src="../figures/papers/brower/fig04.png" height="400"></p>
+</div><div class="column" style="width:45%;">
+<div class="fragment">
+<p><strong>Eager:</strong> Emulate every DGEMM. Slower than native FP64, even with 2 slices.</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p><strong>Performant:</strong> The library decides. Matches FP64, slightly faster at <span class="math inline">\(D = 8192\)</span>.</p>
+</div>
+</div></div>
+</section>
+<section id="performance-at-scale" class="slide level2">
+<h2>Performance at scale</h2>
+<p><span style="font-size: 0.7em; color: #666">Early Examples → DMRG → <strong>Results</strong></span></p>
+<div class="columns">
+<div class="column" style="width:62%;">
+<p><img data-src="../figures/papers/brower/fig05.png" height="440"></p>
+</div><div class="column" style="width:38%;">
+<div style="font-size: 0.85em">
+<p>Native FP64 vs.&nbsp;performant emulation on B200, with H100 for reference</p>
+<div class="fragment">
+<p><strong>Performant mode tracks native FP64.</strong> Slight gains only for the largest <span class="math inline">\(D\)</span> and systems.</p>
+</div>
+</div>
+</div></div>
+</section>
+<section id="what-the-application-tells-us" class="slide level2">
+<h2>What the application tells us</h2>
+<p><span style="font-size: 0.7em; color: #666">Early Examples → DMRG → <strong>Results</strong></span></p>
+<div class="fragment">
+<p><strong>Accuracy:</strong> Four to six slices reach chemical accuracy. Two slices break DMRG entirely.</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p><strong>Speed:</strong> No real gain yet. Emulation is “often slower for memory-bound matrix multiplications”, and sector DGEMMs are small.</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p><strong>Caveat:</strong> Prerelease cuBLAS, and the paper defers performance to a later study.</p>
+</div>
+</section>
+<section id="takeaways-brower-et-al.-2026" class="slide level2">
+<h2>Takeaways: Brower et al.&nbsp;(2026)</h2>
+<div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc">
+<p><strong>Role:</strong> FP64 emulation inside a real scientific code, with the library deciding DGEMM by DGEMM</p>
+<div class="fragment">
+<p><strong>Trade-off:</strong> Accuracy holds with few slices, but speedup depends on DGEMM size, which is set by sector sizes, not <span class="math inline">\(D\)</span></p>
+</div>
+</div>
+</section></section>
+<section>
+<section id="discussion" class="title-slide slide level1 center" data-background-color="#eef4fc">
+<h1>Discussion</h1>
+
+</section>
+<section id="tracing-the-ozaki-scheme" class="slide level2">
+<h2>Tracing the Ozaki scheme</h2>
+<div style="display: flex; align-items: stretch; justify-content: space-between; gap: 0.3em; margin-top: 1.0em; font-size: 0.55em; text-align: center">
+  <div style="flex: 2; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+    <b>Accurate matrix products on CPUs</b><br><span style="color: #666">Ozaki et al. (2012)</span>
+  </div>
+  <div class="fragment" data-fragment-index="1" style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; color: #d9480f">
+    <span style="font-size: 2em">→</span><b>Hardware</b>
+  </div>
+  <div class="fragment" data-fragment-index="1" style="flex: 2; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+    <b>Faster than FP64 on integer Tensor Cores</b><br><span style="color: #666">Ootomo et al. (2024)</span>
+  </div>
+  <div class="fragment" data-fragment-index="2" style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; color: #d9480f">
+    <span style="font-size: 2em">→</span><b>Usability</b>
+  </div>
+  <div class="fragment" data-fragment-index="2" style="flex: 2; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+    <b>Drop-in FP64 replacement in cuBLAS</b><br><span style="color: #666">Schwarz et al. (2026)</span>
+  </div>
+  <div class="fragment" data-fragment-index="3" style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; color: #d9480f">
+    <span style="font-size: 2em">→</span><b>Stability</b>
+  </div>
+  <div class="fragment" data-fragment-index="3" style="flex: 2; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+    <b>FP64 emulation in a scientific application</b><br><span style="color: #666">Brower et al. (2026)</span>
+  </div>
+</div>
+<p><br></p>
+<div class="fragment" data-fragment-index="4">
+<p><strong>From a method for accurate matrix multiplication that was never expected to compete with FP64 on speed, to a potential FP64-killer</strong></p>
+</div>
+</section>
+<section id="performance-comes-from-hardware" class="slide level2">
+<h2>Performance comes from hardware</h2>
+<div class="fragment">
+<p><strong>Integer slices don’t reduce the work:</strong> More slices (<span class="math inline">\(3 \to 9\)</span>), more slice products</p>
+</div>
+<div class="fragment">
+<p><strong>Speedups follow the hardware:</strong> Faster than FP64 at 1 : 512 (consumer GPUs), slower at 1 : 32 (A100)</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p><strong>Hardware is trending in exactly the direction that accelerates the scheme.</strong></p>
+</div>
+</section>
+<section id="nvidia-and-fp64" class="slide level2">
+<h2>NVIDIA and FP64</h2>
+<div class="fragment">
+<p>NVIDIA cuts FP64 throughput: B200 37 → B300 1.3 TFLOP/s</p>
+</div>
+<div class="fragment">
+<p>NVIDIA also ships FP64 emulation in cuBLAS, and authors most of its evaluations.</p>
+</div>
+<div class="fragment">
+<p>Meanwhile, AMD’s MI250X and MI300A (Frontier and El Capitan) keep strong FP64 throughput.</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p><strong>Emulation is most attractive exactly where FP64 has been deprioritized.</strong></p>
+</div>
+</section>
+<section id="what-we-can-conclude" class="slide level2">
+<h2>What we can conclude</h2>
+<div class="fragment">
+<p>Every speedup: On hardware where FP64 has been deprioritized for AI</p>
+</div>
+<div class="fragment">
+<p>Every accuracy test before DMRG: Synthetic matrices, with one magnitude-range parameter</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p><strong>“FP8 is all you need”: The evidence in these works does not support the claim that emulation can largely replace native FP64.</strong></p>
+</div>
+<div class="fragment">
+<p>It supports the moderate position: The Ozaki scheme is a useful tool where it is useful.</p>
+</div>
+</section>
+<section id="future-work" class="slide level2">
+<h2>Future work</h2>
+<ul>
+<li>A systematic characterization of how the scheme fails, on structured and real-application matrices</li>
+<li>A clearer picture of memory overhead in full applications</li>
+<li>Automatic slice-count selection below the FP64-equivalent bound: The scheme as a variable-precision method</li>
+<li>Lightweight heuristics for deciding when to emulate</li>
+</ul>
+</section></section>
+<section>
+<section id="conclusion" class="title-slide slide level1 center" data-background-color="#eef4fc">
+<h1>Conclusion</h1>
+<!-- TODO: INT8 vs FP8 support, Ozaki-II -->
+</section>
+<section id="everything-else" class="slide level2">
+<h2>Everything else</h2>
+<ul>
+<li>Is INT8 support here to stay?</li>
+<li>Ozaki-II</li>
+</ul>
+</section>
+<section id="references" class="slide level2 smaller scrollable">
+<h2>References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-brower2026" class="csl-entry" role="listitem">
+Brower, Cole, Samuel Rodriguez Bernabeu, Jeff Hammond, et al. 2026. <span>“Mixed-Precision Ab Initio Tensor Network State Methods Adapted for <span>NVIDIA</span> <span>Blackwell</span> Technology via Emulated <span>FP64</span> Arithmetic.”</span> <em>Journal of Chemical Theory and Computation</em> 22 (13): 6275–82. <a href="https://doi.org/10.1021/acs.jctc.6c00203">https://doi.org/10.1021/acs.jctc.6c00203</a>.
+</div>
+<div id="ref-demmel2026grade" class="csl-entry" role="listitem">
+<span class="nocase">Demmel, James et al.</span> 2026. <em>How to Grade the Accuracy of the <span>BLAS</span></em>. arXiv preprint arXiv:2609.12307.
+</div>
+<div id="ref-eadline2026matsuoka" class="csl-entry" role="listitem">
+Eadline, Doug. 2026. <em><span>HPC</span> Precision Wars: <span>Satoshi Matsuoka</span> Plants the <span>Ozaki</span> Flag</em>. HPCwire. <a href="https://www.hpcwire.com/2026/06/15/hpc-precision-wars-satoshi-matsuoka-plants-the-ozaki-flag">https://www.hpcwire.com/2026/06/15/hpc-precision-wars-satoshi-matsuoka-plants-the-ozaki-flag</a>.
+</div>
+<div id="ref-menczer2025hybrid" class="csl-entry" role="listitem">
+Menczer, Andor, and Örs Legeza. 2025. <span>“Massively Parallel Tensor Network State Algorithms on Hybrid <span>CPU-GPU</span> Based Architectures.”</span> <em>Journal of Chemical Theory and Computation</em> 21: 1572–87. <a href="https://doi.org/10.1021/acs.jctc.4c00661">https://doi.org/10.1021/acs.jctc.4c00661</a>.
+</div>
+<div id="ref-mukunoki2020" class="csl-entry" role="listitem">
+Mukunoki, Daichi, Katsuhisa Ozaki, Takeshi Ogita, and Toshiyuki Imamura. 2020. <span>“<span>DGEMM</span> Using Tensor Cores, and Its Accurate and Reproducible Versions.”</span> <em>High Performance Computing</em>, 230–48.
+</div>
+<div id="ref-nvidia2025emulation" class="csl-entry" role="listitem">
+NVIDIA. 2025. <em>Unlocking Tensor Core Performance with Floating Point Emulation in <span class="nocase">cuBLAS</span></em>. <a href="https://developer.nvidia.com/blog/unlocking-tensor-core-performance-with-floating-point-emulation-in-cublas/" class="uri">Https://developer.nvidia.com/blog/unlocking-tensor-core-performance-with-floating-point-emulation-in-cublas/</a>.
+</div>
+<div id="ref-ootomo2024" class="csl-entry" role="listitem">
+Ootomo, Hiroyuki, Katsuhisa Ozaki, and Rio Yokota. 2024. <span>“<span>DGEMM</span> on Integer Matrix Multiplication Unit.”</span> <em>The International Journal of High Performance Computing Applications</em> 38 (4): 297–313. <a href="https://doi.org/10.1177/10943420241239588">https://doi.org/10.1177/10943420241239588</a>.
+</div>
+<div id="ref-ozaki2012" class="csl-entry" role="listitem">
+Ozaki, Katsuhisa, Takeshi Ogita, Shin’ichi Oishi, and Siegfried M. Rump. 2012. <span>“Error-Free Transformations of Matrix Multiplication by Using Fast Routines of Matrix Multiplication and Its Applications.”</span> <em>Numerical Algorithms</em> 59 (1): 95–118.
+</div>
+<div id="ref-morgan2026tacc" class="csl-entry" role="listitem">
+Prickett Morgan, Timothy. 2026. <em><span>TACC</span> Explores Mixed Precision and <span>FP64</span> Emulation for <span>HPC</span> with <span>Horizon</span></em>. The Next Platform. <a href="https://www.nextplatform.com/hpc/2026/02/03/tacc-explores-mixed-precision-and-fp64-emulation-for-hpc-with-horizon/4092147">https://www.nextplatform.com/hpc/2026/02/03/tacc-explores-mixed-precision-and-fp64-emulation-for-hpc-with-horizon/4092147</a>.
+</div>
+<div id="ref-rump2008a" class="csl-entry" role="listitem">
+Rump, Siegfried M., Takeshi Ogita, and Shin’ichi Oishi. 2008. <span>“Accurate Floating-Point Summation Part <span>I</span>: Faithful Rounding.”</span> <em>SIAM Journal on Scientific Computing</em> 31 (1): 189–224.
+</div>
+<div id="ref-schwarz2026" class="csl-entry" role="listitem">
+Schwarz, Angelika, Anton Anders, Cole Brower, et al. 2026. <span>“Guaranteed <span>DGEMM</span> Accuracy While Using Reduced Precision Tensor Cores Through Extensions of the <span>Ozaki</span> Scheme.”</span> <em>Proceedings of the Supercomputing Asia and International Conference on High Performance Computing in Asia Pacific Region (SCA/HPCAsia ’26)</em>, 91–101. <a href="https://doi.org/10.1145/3773656.3773670">https://doi.org/10.1145/3773656.3773670</a>.
+</div>
+<div id="ref-woodie2026fp8" class="csl-entry" role="listitem">
+Woodie, Alex. 2026a. <em><span>FP8</span> or <span>FP64</span>? <span>AMD</span> Says It Will Give Scientists What They Need</em>. HPCwire. <a href="https://www.hpcwire.com/2026/06/17/fp8-or-fp64-amd-says-it-will-give-scientists-what-they-need">https://www.hpcwire.com/2026/06/17/fp8-or-fp64-amd-says-it-will-give-scientists-what-they-need</a>.
+</div>
+<div id="ref-woodie2026genesis" class="csl-entry" role="listitem">
+Woodie, Alex. 2026b. <em>Genesis Mission Will Lean Heavily on <span>Ozaki</span> Scheme for <span>FP64</span> Capability</em>. HPCwire. <a href="https://www.hpcwire.com/2026/02/17/genesis-mission-will-lean-heavily-on-ozaki-scheme-for-fp64-capability">https://www.hpcwire.com/2026/02/17/genesis-mission-will-lean-heavily-on-ozaki-scheme-for-fp64-capability</a>.
+</div>
+</div>
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="slides_draft3_litera_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="slides_draft3_litera_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="slides_draft3_litera_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="slides_draft3_litera_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="slides_draft3_litera_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="slides_draft3_litera_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="slides_draft3_litera_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="slides_draft3_litera_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="slides_draft3_litera_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="slides_draft3_litera_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"\u003ci class=\"fas fa-gear\">\u003c/i>","content":"\u003cul class=\"slide-menu-items\">\n\u003cli class=\"slide-tool-item active\" data-item=\"0\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\">\u003ckbd>f\u003c/kbd> Fullscreen\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"1\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\">\u003ckbd>s\u003c/kbd> Speaker View\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"2\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\">\u003ckbd>o\u003c/kbd> Slide Overview\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"3\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\">\u003ckbd>e\u003c/kbd> PDF Export Mode\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"4\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\">\u003ckbd>r\u003c/kbd> Scroll View Mode\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"5\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\">\u003ckbd>?\u003c/kbd> Keyboard Help\u003c/a>\u003c/li>\n\u003c/ul>"}],"openButton":true,"openButtonLabel":"Slide menu"},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 720,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <!-- Section tracker: a small label and a row of dots along the top-left edge,
+         showing which section the current slide is in and how far through it.
+         Live: one fixed element, updated on every slide change (like the slide
+         number). PDF export (?print-pdf): a copy stamped into each printed page.
+         Skips the title slide and the references. -->
+    <style>
+      .reveal .section-tracker {
+        position: absolute;
+        left: 16px;
+        top: 10px;
+        justify-content: flex-start;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 13px;
+        line-height: 1;
+        color: #8a8f99;
+        font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
+        pointer-events: none;
+        z-index: 31;
+      }
+      .reveal .section-tracker:empty { display: none; }
+      .reveal .section-tracker .dots { display: flex; gap: 4px; }
+      .reveal .section-tracker .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        border: 1px solid #b5bac3;
+        box-sizing: border-box;
+      }
+      .reveal .section-tracker .dot.done { background: #c9ced6; border-color: #c9ced6; }
+      .reveal .section-tracker .dot.here { background: #1c4e8a; border-color: #1c4e8a; }
+    </style>
+    <script>
+      (function () {
+        var info = new Map();   // slide element -> {name, i, n}
+
+        function index() {
+          document.querySelectorAll(".reveal .slides > section").forEach(function (stack) {
+            var head = stack.querySelector(":scope > section.level1 h1");
+            if (!head) return;                       // title slide
+            var name = head.textContent.trim();
+            var slides = Array.prototype.filter.call(
+              stack.querySelectorAll(":scope > section.slide"),
+              function (s) { return s.id !== "references"; });
+            slides.forEach(function (s, i) { info.set(s, { name: name, i: i, n: slides.length }); });
+          });
+        }
+
+        function fill(el, slide) {
+          el.innerHTML = "";
+          var t = info.get(slide);
+          if (!t) return;
+          var label = document.createElement("span");
+          label.textContent = t.name;
+          var dots = document.createElement("span");
+          dots.className = "dots";
+          for (var j = 0; j < t.n; j++) {
+            var d = document.createElement("span");
+            d.className = "dot" + (j < t.i ? " done" : j === t.i ? " here" : "");
+            dots.appendChild(d);
+          }
+          el.appendChild(label);
+          el.appendChild(dots);
+        }
+
+        function setup() {
+          index();
+          var live = document.createElement("div");
+          live.className = "section-tracker";
+          document.querySelector(".reveal").appendChild(live);
+          fill(live, Reveal.getCurrentSlide());
+          Reveal.on("slidechanged", function (e) { fill(live, e.currentSlide); });
+          Reveal.on("pdf-ready", function () {
+            live.remove();
+            document.querySelectorAll(".reveal .pdf-page").forEach(function (page) {
+              var slide = page.querySelector("section.slide");
+              if (!slide || !info.has(slide)) return;
+              var el = document.createElement("div");
+              el.className = "section-tracker";
+              fill(el, slide);
+              page.appendChild(el);
+            });
+          });
+        }
+
+        if (Reveal.isReady()) setup();
+        else Reveal.on("ready", setup);
+      })();
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+          window.quartoDecorateExternalLinks = function (root) {
+         var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+              if (!link.classList.contains('no-external-icon')) {
+              }
+            }
+          }
+          };
+          window.quartoDecorateExternalLinks(window.document);
+        // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+        // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+        const hideOnEscAndFocusOut = {
+          name: 'hideOnEscAndFocusOut',
+          defaultValue: true,
+          fn(instance) {
+            const dismiss = () => {
+              // A show scheduled by the trigger delay would otherwise reopen it
+              instance.clearDelayTimeouts();
+              instance.hide();
+            };
+            const onKeyDown = (event) => {
+              if (event.key !== 'Escape') {
+                return;
+              }
+              // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+              // except an open reveal.js slide menu, which Esc should close too.
+              // The menu handles keys only when its keyboard option is on.
+              const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+                window.Reveal.getConfig().menu?.keyboard !== false;
+              if (!menuHandlesEsc) {
+                event.stopPropagation();
+              }
+              if (instance.popper.contains(window.document.activeElement)) {
+                // Disabled while refocusing so the focus trigger does not reopen it
+                instance.disable();
+                instance.reference.focus();
+                instance.enable();
+              }
+              dismiss();
+            };
+            const onFocusOut = (event) => {
+              const target = event.relatedTarget;
+              if (target && !instance.reference.contains(target) &&
+                  !instance.popper.contains(target)) {
+                dismiss();
+              }
+            };
+            // On the trigger too: a click trigger (code-annotations: select) has no
+            // blur handling. Attached for the instance's lifetime so leaving the
+            // trigger also cancels a show still pending on the trigger delay.
+            instance.reference.addEventListener('focusout', onFocusOut);
+            return {
+              onShow() {
+                window.document.addEventListener('keydown', onKeyDown, true);
+                instance.popper.addEventListener('focusout', onFocusOut);
+              },
+              onHide() {
+                window.document.removeEventListener('keydown', onKeyDown, true);
+                instance.popper.removeEventListener('focusout', onFocusOut);
+              },
+              onDestroy() {
+                instance.reference.removeEventListener('focusout', onFocusOut);
+              },
+            };
+          },
+        };
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+            plugins: [hideOnEscAndFocusOut],
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

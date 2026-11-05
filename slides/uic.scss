@@ -1,0 +1,56 @@
+/*-- scss:defaults --*/
+// UIC brand colors (verify against brand.uic.edu)
+$uic-navy: #001E62;
+$uic-red:  #D50032;
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@500;700&family=Roboto:ital,wght@0,400;0,700;1,400&display=swap');
+
+$body-bg: #ffffff;
+$body-color: #1f2430;
+$link-color: $uic-red;
+$font-family-sans-serif: "Roboto", "Helvetica Neue", Arial, sans-serif;
+$presentation-heading-font: "Roboto Condensed", "Helvetica Neue", Arial, sans-serif;
+$presentation-heading-color: $uic-navy;
+$presentation-heading-text-transform: none;
+
+/*-- scss:rules --*/
+// Slide titles: navy with a short red rule underneath
+.reveal h2 {
+  font-weight: 700;
+  padding-bottom: 0.15em;
+  border-bottom: 3px solid $uic-red;
+  display: inline-block;
+}
+
+// Section header slides (h1): bigger, navy, red accent bar above
+.reveal h1,
+.reveal section.has-light-background h1,
+.reveal section.has-light-background h2 {
+  font-weight: 700;
+  color: $uic-navy;
+}
+.reveal section.level1 h1::before {
+  content: "";
+  display: block;
+  width: 3em;
+  height: 6px;
+  margin: 0 0 0.4em;
+  background: $uic-red;
+}
+
+// Title slide
+.reveal .title-slide h1.title { color: $uic-navy; }
+.reveal .title-slide .subtitle,
+.reveal .quarto-title-block .subtitle { color: $uic-red; }
+.reveal .title-slide .institute,
+.reveal .title-slide .date { color: #555; }
+
+// Bold terms pick up the brand navy
+.reveal strong { color: $uic-navy; }
+
+// Tables: navy header rule
+.reveal table thead th { border-bottom: 2px solid $uic-navy; }
+
+// Slide number + progress bar
+.reveal .slide-number { color: $uic-navy; background: transparent; }
+.reveal .progress { color: $uic-red; }

@@ -1,0 +1,8 @@
+# Conclusion {background-color="#eef4fc"}
+
+<!-- TODO: INT8 vs FP8 support, Ozaki-II -->
+
+## Everything else
+
+- Is INT8 support here to stay?
+- Ozaki-II

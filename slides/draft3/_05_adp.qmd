@@ -1,0 +1,137 @@
+# Ozaki with ADP {background-color="#eef4fc"}
+
+## Schwarz et al. (2026)
+
+*Guaranteed DGEMM Accuracy While Using Reduced Precision Tensor Cores Through Extensions of the Ozaki Scheme*
+
+[Angelika Schwarz, Anton Anders, Cole Brower, Harun Bayraktar, John Gunnels, Kate Clark, RuQing G. Xu, Samuel Rodriguez, Sebastien Cayrols, Pawel Tabaszewski, Victor Podlozhnyuk [NVIDIA]{style="color: #666"} · *SCA/HPCAsia '26*, 2026 [@schwarz2026]]{style="font-size: 0.55em"}
+
+. . .
+
+2025: FP64 emulation added to cuBLAS [@nvidia2025emulation]
+
+. . .
+
+::: {style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1em; margin: 0.6em auto 0; background: #eef4fc; width: 70%; text-align: center"}
+**Use emulation when it is beneficial, and standard DGEMM when it is not**
+:::
+
+## Decompose: Unsigned slices
+
+[**The Ozaki scheme:** **Decompose** → Multiply → Accumulate]{style="font-size: 0.7em; color: #666"}
+
+::::: columns
+::: {.column width="62%"}
+![](../figures/static/slides/esc_slice_d3.svg){height="480px"}
+:::
+
+::: {.column width="38%"}
+::: fragment
+Only the first slice carries sign information, so every bit in the other slices holds mantissa bits.
+:::
+:::
+:::::
+
+## Decompose: Exponent span capacity (ESC)
+
+[**The Ozaki scheme:** **Decompose** → Multiply → Accumulate]{style="font-size: 0.7em; color: #666"}
+
+::::: columns
+::: {.column width="64%"}
+![](../figures/static/slides/esc_d3.svg){height="480px"}
+:::
+
+::: {.column width="36%"}
+::: fragment
+**ESC:** How many more bits than the standard 53 the slices need to cover
+:::
+:::
+:::::
+
+## Automatic Dynamic Precision (ADP)
+
+[**ADP:** Wraps Decompose → Multiply → Accumulate]{style="font-size: 0.7em; color: #666"}
+
+::::: columns
+::: {.column width="45%"}
+![](../figures/papers/schwarz/fig08.png){height="470px"}
+:::
+
+::: {.column width="55%"}
+::: {style="font-size: 0.8em"}
+::: fragment
+Check for Inf/NaN, compute ESC, then decide: emulate, or fall back to native DGEMM
+:::
+
+<br>
+
+::: fragment
+**Goal:** A matrix product at least as accurate as native FP64, in at least the same amount of time
+:::
+
+<br>
+
+::: fragment
+How the heuristic decides "emulation slower than FP64?" is not described.
+:::
+:::
+:::
+:::::
+
+## Moving away from the error-free guarantee
+
+::::: columns
+::: {.column width="50%"}
+**Ozaki et al. (2012)**
+
+Goal: As little rounding error as possible
+
+Slice width $\alpha$ chosen so slice products are provably exact
+:::
+
+::: {.column .fragment width="50%"}
+**Schwarz et al. (2026)**
+
+Goal: FP64-equivalent accuracy
+
+Slices always contain eight significant bits; ESC sets how many slices are needed
+:::
+:::::
+
+<br>
+
+::: fragment
+**The only evidence that this maintains FP64-equivalent accuracy is their empirical evaluation.**
+:::
+
+## Evaluation
+
+::::: columns
+::: {.column width="48%"}
+![](../figures/papers/schwarz/fig02.png){height="400px" fig-align="center"}
+:::
+
+::: {.column width="52%"}
+![](../figures/papers/schwarz/fig06.png){height="400px" fig-align="center"}
+:::
+:::::
+
+. . .
+
+**With fallback:** Accuracy indistinguishable from native DGEMM. Speedup grows with problem size.
+
+## Impacts of implementation
+
+::: fragment
+**Performance:** Consistent with Ootomo et al., but ESC adds overhead that doesn't become negligible even at the largest sizes
+:::
+
+<br>
+
+::: fragment
+**Usability:** Users never have to consider the magnitude range of their inputs or the throughputs of their hardware...
+:::
+
+::: fragment
+... but this critical piece of enabling safe emulation remains a black box
+:::
