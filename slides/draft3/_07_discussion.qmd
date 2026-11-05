@@ -1,10 +1,10 @@
 # Discussion {background-color="#eef4fc"}
 
-[Evidence · Practicality · Variable Precision · Future Work]{style="color: #666"}
+[Evidence · Hardware and Inputs · Variable Precision · Future Work]{style="color: #666"}
 
 ## Tracing the Ozaki scheme
 
-[**Evidence** → Practicality → Variable Precision → Future Work]{style="font-size: 0.7em; color: #666"}
+[**Evidence** → Hardware and Inputs → Variable Precision → Future Work]{style="font-size: 0.7em; color: #666"}
 
 ```{=html}
 <div style="display: flex; align-items: stretch; justify-content: space-between; gap: 0.3em; margin-top: 1.0em; font-size: 0.55em; text-align: center">
@@ -38,83 +38,103 @@
 **From a method for accurate matrix multiplication that was never expected to compete with FP64 on speed, to a potential FP64-killer**
 :::
 
+::: notes
+Each work moved the scheme one step. Ozaki et al. established it as a viable method for accurate matrix multiplication, outperforming alternatives like XBLAS at comparable accuracy. Ootomo et al. showed that integer Tensor Cores can push it past native FP64 throughput on consumer GPUs, though not on datacenter chips with strong FP64. Schwarz et al. showed it can be deployed safely through ADP. Brower et al. confirmed the results carry over to at least one real scientific application, DMRG, with sustained accuracy across hundreds of iterations.
+:::
+
+## Back to the debate
+
+[**Evidence** → Hardware and Inputs → Variable Precision → Future Work]{style="font-size: 0.7em; color: #666"}
+
+**Can emulation boost FP64 throughput?**
+
+::: fragment
+Yes, sometimes.
+:::
+
+<br>
+
+::: fragment
+**Compute-bound on matrix multiplication:** Emulation helps, if the low-precision throughput is there
+:::
+
+::: fragment
+**Memory-bound:** Emulation doesn't help, but neither would more FP64 throughput
+:::
+
+::: notes
+To be fair, even the most pro-emulation position isn't saying emulation can just replace all FP64 performance. The pro-emulation argument is: workloads that are compute-bound on matrix multiplication benefit from emulation, provided the low-precision throughput is there to support them. Workloads that are memory-bound wouldn't benefit from emulation, but they also wouldn't necessarily benefit from higher FP64 throughput.
+:::
+
+## Where DMRG lands
+
+[**Evidence** → Hardware and Inputs → Variable Precision → Future Work]{style="font-size: 0.7em; color: #666"}
+
+::: fragment
+**Brower et al.:** No speedup, even on hardware that favors emulation
+:::
+
+::: fragment
+**Why:** Memory-bound matrix products, at problem sizes where ADP and slicing overhead dominate
+:::
+
+::: notes
+We do see the debate play out, to an extent, in Brower et al. Emulation doesn't accelerate their workload, even on a chip where the hardware favors it. They describe their matrix multiplication steps as memory-bound. But also, Schwarz et al.'s results suggest emulation still wouldn't give a speedup at their problem size, because at small sizes the overhead of the ADP mechanisms and the matrix product transformation is more significant.
+:::
+
 ## Performance comes from hardware
 
-[**Evidence** → Practicality → Variable Precision → Future Work]{style="font-size: 0.7em; color: #666"}
+[Evidence → **Hardware and Inputs** → Variable Precision → Future Work]{style="font-size: 0.7em; color: #666"}
+
+**Number one factor:** The FP64 : low-precision throughput ratio of the target hardware
 
 ::: fragment
-**Integer slices don't reduce the work:** More slices ($3 \to 9$), more slice products
-:::
-
-::: fragment
-**Speedups follow the hardware:** Faster than FP64 at 1 : 512 (consumer GPUs), slower at 1 : 32 (A100)
-:::
-
-<br>
-
-::: fragment
-**Hardware is trending in exactly the direction that accelerates the scheme.**
-:::
-
-## NVIDIA and FP64
-
-[**Evidence** → Practicality → Variable Precision → Future Work]{style="font-size: 0.7em; color: #666"}
-
-::: fragment
-NVIDIA cuts FP64 throughput: B200 37 → B300 1.3 TFLOP/s
-:::
-
-::: fragment
-NVIDIA also ships FP64 emulation in cuBLAS, and authors most of its evaluations.
-:::
-
-::: fragment
-Meanwhile, AMD's MI250X and MI300A (Frontier and El Capitan) keep strong FP64 throughput.
+Faster than FP64 at 1 : 512 (consumer GPUs), slower at 1 : 32 (A100)
 :::
 
 <br>
 
 ::: fragment
-**Emulation is most attractive exactly where FP64 has been deprioritized.**
+**Emulation beats native DGEMM precisely on the hardware where native FP64 has been deprioritized.**
 :::
 
-## What the evidence supports
+::: notes
+This is going to be a little less tidy, because we've reached the edge of the literature.
 
-[**Evidence** → Practicality → Variable Precision → Future Work]{style="font-size: 0.7em; color: #666"}
-
-::: fragment
-Every speedup: On hardware where FP64 has been deprioritized for AI
+Concrete example of the trend: NVIDIA's B200 to B300 goes from 37 to 1.3 TFLOP/s FP64. Meanwhile AMD's MI250X and MI300A, in Frontier and El Capitan, keep strong FP64.
 :::
 
-::: fragment
-Every accuracy test before DMRG: Synthetic matrices, with one magnitude-range parameter
-:::
+## Two ways to read this
 
-<br>
+[Evidence → **Hardware and Inputs** → Variable Precision → Future Work]{style="font-size: 0.7em; color: #666"}
 
 ::: fragment
-**"FP8 is all you need": The evidence in these works does not support the claim that emulation can largely replace native FP64.**
+**Cynical:** You can make emulation arbitrarily better than FP64 by having terrible FP64 support.
 :::
 
 ::: fragment
-It supports the moderate position: The Ozaki scheme is a useful tool where it is useful.
+**Intriguing:** Low-precision hardware is cheaper to build and run. If the same chip area gives more *emulated* FP64 than native, clinging to native FP64 may be the inefficient choice.
 :::
 
-## Useful where?
+::: notes
+On the cynical side: workloads that genuinely need high FP64 throughput are better off on chips that actually have high FP64 throughput.
 
-[Evidence → **Practicality** → Variable Precision → Future Work]{style="font-size: 0.7em; color: #666"}
+At the very least, emulation means we can squeeze some FP64 performance out of low-precision hardware, which extends that hardware if it's all you have.
+:::
 
-Whether emulation beats native FP64 depends on three things:
+## Hardware is not the only factor
+
+[Evidence → **Hardware and Inputs** → Variable Precision → Future Work]{style="font-size: 0.7em; color: #666"}
 
 ```{=html}
 <div style="display: flex; gap: 0.8em; margin-top: 0.8em; font-size: 0.65em; text-align: center">
-  <div class="fragment" style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
     <b>Hardware</b><br><span style="color: #666">FP64 : INT8 throughput ratio</span>
   </div>
-  <div class="fragment" style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div class="fragment" style="flex: 1; border: 2px solid #d9480f; border-radius: 8px; padding: 0.6em; background: #fff4e6">
     <b>Data</b><br><span style="color: #666">Magnitude range of the inputs</span>
   </div>
-  <div class="fragment" style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div class="fragment" style="flex: 1; border: 2px solid #d9480f; border-radius: 8px; padding: 0.6em; background: #fff4e6">
     <b>Size</b><br><span style="color: #666">Matrix dimensions</span>
   </div>
 </div>
@@ -123,30 +143,47 @@ Whether emulation beats native FP64 depends on three things:
 <br>
 
 ::: fragment
-**The user has to know all three, or rely on ADP to decide for them.**
+**When the hardware favors emulation, emulation is faster on *some* inputs.**
 :::
 
-## What it costs to use
-
-[Evidence → **Practicality** → Variable Precision → Future Work]{style="font-size: 0.7em; color: #666"}
-
-::: fragment
-**Slice count:** Bounds and ESC target FP64. No recipe for a less strict accuracy target.
+::: notes
+The problem with the "just build low-precision chips" view: hardware is the primary factor, but not the only one. Speedup also depends on the inputs. We know for a fact that emulation can be enormously beneficial on some hardware, on some specific inputs. What we don't know well is which inputs.
 :::
 
-::: fragment
-**ESC:** Measured on every pair of inputs. Amortizes when matrices are reused, not when they are new every iteration.
-:::
+## Does emulation help me?
+
+[Evidence → **Hardware and Inputs** → Variable Precision → Future Work]{style="font-size: 0.7em; color: #666"}
+
+```{=html}
+<div style="display: flex; gap: 0.8em; margin-top: 0.8em; font-size: 0.6em; text-align: center">
+  <div class="fragment" style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+    <b>What matrices does emulation speed up?</b><br><span style="color: #666">A broad study across magnitude ranges, structures, and shapes</span>
+  </div>
+  <div class="fragment" style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+    <b>What workloads does emulation speed up?</b><br><span style="color: #666">A faster matrix multiplication phase can still mean a net slowdown</span>
+  </div>
+</div>
+```
 
 <br>
 
 ::: fragment
-**Choosing when and how to emulate is still a nontrivial burden, especially for portable codes.**
+**So far: The same synthetic matrices, stressing magnitude range and size only.**
+:::
+
+::: notes
+"Does emulation help me?" has two surfaces of attack.
+
+Matrices: we can test empirically, or predict with estimators like ESC. But ESC is computed from the largest magnitudes in the result and the inputs. It doesn't account for matrix structure, which can cause heavier cancellation, or for size and shape, whose impact we only understand heuristically. Answering this needs a broad study across shapes, structures, and so on.
+
+Workloads: we have to consider what work is actually in the workload. If you have a phase that's really intense matrix multiplication, that phase may be sped up on hardware where emulation wins. But low-precision Tensor Cores are built for matrix multiplication specifically, so later phases that do FP64 work that *isn't* matrix multiplication may be slower on that same hardware, and the result is a net slowdown. This is also the answer to "should we just load chips with low-precision hardware?"
+
+For the most part, every Ozaki implementation we've seen is evaluated on the same synthetic matrices, one matrix product at a time.
 :::
 
 ## A variable-precision method
 
-[Evidence → Practicality → **Variable Precision** → Future Work]{style="font-size: 0.7em; color: #666"}
+[Evidence → Hardware and Inputs → **Variable Precision** → Future Work]{style="font-size: 0.7em; color: #666"}
 
 ```{=html}
 <div style="display: flex; align-items: center; justify-content: center; gap: 0.5em; margin-top: 0.6em; font-size: 0.6em; text-align: center">
@@ -161,16 +198,20 @@ Whether emulation beats native FP64 depends on three things:
 <br>
 
 ::: fragment
-Each 8-bit slice adds another 8 bits of mantissa. Nothing requires stopping at FP64's 53.
+Each 8-bit integer slice adds another 8 bits of mantissa. Nothing requires stopping at FP64's 53.
 :::
 
 ::: fragment
-Brower et al.: 4 and 6 slices, less than FP64, still usable in DMRG.
+**Brower et al.:** 4 and 6 slices, less than FP64, still chemical accuracy in DMRG.
+:::
+
+::: notes
+This is the main argument of the talk. In the 2012 formulation, the slices live inside FP64's fixed 53-bit mantissa, so the slice count has a ceiling. With integer slices, that ceiling is gone. Schwarz et al. hint at this by describing ESC in terms of mantissa bit coverage, not FP64-equivalence. Brower et al. show it in practice. The same knob that dials precision below FP64 dials it above FP64 too.
 :::
 
 ## The question changes
 
-[Evidence → Practicality → **Variable Precision** → Future Work]{style="font-size: 0.7em; color: #666"}
+[Evidence → Hardware and Inputs → **Variable Precision** → Future Work]{style="font-size: 0.7em; color: #666"}
 
 <br>
 
@@ -185,31 +226,29 @@ Brower et al.: 4 and 6 slices, less than FP64, still usable in DMRG.
 <br>
 
 ::: fragment
-The mixed-precision community has been developing tools to answer this for over a decade.
+**The Ozaki scheme gives us a framework to study how much precision a problem really needs.**
 :::
 
-## Mixed precision all along
-
-[Evidence → Practicality → **Variable Precision** → Future Work]{style="font-size: 0.7em; color: #666"}
-
-**2012:** Split FP64 into lower-precision slices, accumulate the products in FP64
-
-<br>
-
-::: fragment
-**The scheme did not have to be adapted to Tensor Cores so much as finally met the hardware it had been describing all along.**
+::: notes
+The mixed-precision computing community has been developing tools to answer that question for over a decade. Placing the Ozaki scheme in that body of work may help identify its most effective role in scientific computing.
 :::
 
 ## Future work
 
-[Evidence → Practicality → Variable Precision → **Future Work**]{style="font-size: 0.7em; color: #666"}
+[Evidence → Hardware and Inputs → Variable Precision → **Future Work**]{style="font-size: 0.7em; color: #666"}
 
 ::: {style="font-size: 0.6em"}
 | Gap | Comes from |
 |:----|:----|
-| How the scheme fails on structured and real-application matrices | Synthetic test matrices |
-| Memory overhead in full applications | Rarely reported in detail |
-| Slice-count selection from an application-level accuracy target | Variable precision |
-| Lightweight heuristics for deciding when to emulate | ESC overhead on every product |
-| Older numerical techniques that fit modern hardware | The Ozaki scheme itself: 2012 → 2024 |
+| How the scheme fails on structured, real-application, and extreme-aspect-ratio matrices | Synthetic test matrices |
+| Net performance of full workloads on emulation-favoring hardware | Benchmarks of one matrix product at a time |
+| Memory overhead and data movement in full applications | Rarely reported in detail |
+| Slice count chosen from an application-level accuracy target | ADP's fixed FP64 target |
+| Older numerical techniques that fit modern GPUs' asymmetric throughput | The Ozaki scheme itself: 2012 → 2024 |
+:::
+
+::: notes
+Each gap comes from something earlier in the talk.
+
+Failure: there may be some domain that frequently works with matrices that are adversarial to emulation. Workloads: a matrix multiplication phase that speeds up doesn't mean the whole workload does, if the other phases run slower on the same hardware. Memory: not just "how much more memory to allocate," but how data movement in an application changes when the working set blows up with matrix slices. Slice count: ADP makes a binary decision with the accuracy target fixed to FP64; a runtime that picks the slice count from application-level accuracy requirements would widen the scheme's useful range considerably. That's the variable-precision framing turned into a tool. Older techniques: the Ozaki scheme was impractical on throughput for over a decade until the hardware arrived; other techniques might be in the same spot.
 :::
