@@ -16,7 +16,7 @@
 
 . . .
 
-::: {style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1em; margin: 0.6em auto 0; background: #eef4fc; width: 70%; text-align: center"}
+::: {style="border: 2px solid #001E61; border-radius: 8px; padding: 0.8em 1em; margin: 0.6em auto 0; background: #eef4fc; width: 70%; text-align: center"}
 **Use emulation when it is beneficial, and standard DGEMM when it is not**
 :::
 
@@ -183,7 +183,7 @@ The Ozaki scheme is now an explicit alternative to DGEMM, but it is still evalua
 
 ## Takeaways: Schwarz et al. (2026)
 
-::: {style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc"}
+::: {style="border: 2px solid #001E61; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc"}
 **Role:** FP64 emulation, a drop-in replacement for DGEMM used only when it is beneficial
 
 . . .

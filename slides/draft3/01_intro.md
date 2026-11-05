@@ -24,25 +24,25 @@
 People who care a lot about FP64 don't agree on what emulation is for.
 
 ::: {style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.7em 1.4em; margin-top: 0.4em; font-size: 0.6em"}
-::: {.fragment style="border-left: 4px solid #1c4e8a; padding: 0.2em 0.7em"}
+::: {.fragment style="border-left: 4px solid #001E61; padding: 0.2em 0.7em"}
 "FP8 is All You Need: Debunking Hardware FP64 as the HPC Holy Grail"
 
 [Satoshi Matsuoka, RIKEN [@eadline2026matsuoka]]{style="color: #666"}
 :::
 
-::: {.fragment style="border-left: 4px solid #1c4e8a; padding: 0.2em 0.7em"}
+::: {.fragment style="border-left: 4px solid #001E61; padding: 0.2em 0.7em"}
 "We don't view this [as a] substitution. These are complementary."
 
 [Darío Gil, U.S. Department of Energy [@woodie2026genesis]]{style="color: #666"}
 :::
 
-::: {.fragment style="border-left: 4px solid #1c4e8a; padding: 0.2em 0.7em"}
+::: {.fragment style="border-left: 4px solid #001E61; padding: 0.2em 0.7em"}
 "If there's a case that this emulation is producing scientifically acceptable results, then suddenly our FP64 cost is now divided by 2X to 3X without actually changing the chip."
 
 [Dan Stanzione, TACC [@morgan2026tacc]]{style="color: #666"}
 :::
 
-::: {.fragment style="border-left: 4px solid #1c4e8a; padding: 0.2em 0.7em"}
+::: {.fragment style="border-left: 4px solid #001E61; padding: 0.2em 0.7em"}
 "If you get to wrong answers really fast, that's not helping anybody. We want to get to right answers fast."
 
 [Joseph George, AMD [@woodie2026fp8]]{style="color: #666"}

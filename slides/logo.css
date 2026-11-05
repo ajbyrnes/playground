@@ -1,0 +1,9 @@
+/* Move Quarto's slide logo from the bottom-right corner to the top-right. */
+.reveal .slide-logo {
+  top: 12px !important;
+  right: 16px !important;
+  bottom: auto !important;
+  height: 56px !important;
+  max-height: 56px !important;
+  width: auto !important;
+}

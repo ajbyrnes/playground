@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="slides_draft3_files/libs/clipboard/clipboard.min.js"></script>
-<script src="slides_draft3_files/libs/quarto-html/tabby.min.js"></script>
-<script src="slides_draft3_files/libs/quarto-html/popper.min.js"></script>
-<script src="slides_draft3_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="slides_draft3_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="slides_draft3_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="slides_draft3_files/libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="slides_final_files/libs/clipboard/clipboard.min.js"></script>
+<script src="slides_final_files/libs/quarto-html/tabby.min.js"></script>
+<script src="slides_final_files/libs/quarto-html/popper.min.js"></script>
+<script src="slides_final_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="slides_final_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="slides_final_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="slides_final_files/libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.11.9">
 
   <meta name="author" content="A. J. Byrnes">
-  <meta name="dcterms.date" content="2026-11-04">
+  <meta name="dcterms.date" content="2026-11-05">
   <title>The Ozaki Scheme</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="slides_draft3_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="slides_draft3_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="slides_final_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="slides_final_files/libs/revealjs/dist/reveal.css">
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -55,11 +55,12 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="slides_draft3_files/libs/revealjs/dist/theme/quarto-1ddb21c2f84686f497aff9e1fdc170fd.css">
-  <link href="slides_draft3_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="slides_draft3_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="slides_draft3_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="slides_draft3_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="slides_final_files/libs/revealjs/dist/theme/quarto-5bf03a4bc05d4437af4690b14a721b09.css">
+  <link rel="stylesheet" href="logo.css">
+  <link href="slides_final_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="slides_final_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="slides_final_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="slides_final_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
@@ -167,7 +168,7 @@ A. J. Byrnes
     </div>
 </div>
 
-  <p class="date">2026-11-04</p>
+  <p class="date">November 5, 2026</p>
 </section>
 <section>
 <section id="intro" class="title-slide slide level1 center" data-background-color="#eef4fc">
@@ -235,19 +236,19 @@ A. J. Byrnes
 <h2>Various perspectives</h2>
 <p>People who care a lot about FP64 don’t agree on what emulation is for.</p>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.7em 1.4em; margin-top: 0.4em; font-size: 0.6em">
-<div class="fragment" style="border-left: 4px solid #1c4e8a; padding: 0.2em 0.7em">
+<div class="fragment" style="border-left: 4px solid #001E61; padding: 0.2em 0.7em">
 <p>“FP8 is All You Need: Debunking Hardware FP64 as the HPC Holy Grail”</p>
 <p><span style="color: #666">Satoshi Matsuoka, RIKEN <span class="citation" data-cites="eadline2026matsuoka">(<a href="#/references" role="doc-biblioref" onclick="">Eadline 2026</a>)</span></span></p>
 </div>
-<div class="fragment" style="border-left: 4px solid #1c4e8a; padding: 0.2em 0.7em">
+<div class="fragment" style="border-left: 4px solid #001E61; padding: 0.2em 0.7em">
 <p>“We don’t view this [as a] substitution. These are complementary.”</p>
 <p><span style="color: #666">Darío Gil, U.S. Department of Energy <span class="citation" data-cites="woodie2026genesis">(<a href="#/references" role="doc-biblioref" onclick="">Woodie 2026b</a>)</span></span></p>
 </div>
-<div class="fragment" style="border-left: 4px solid #1c4e8a; padding: 0.2em 0.7em">
+<div class="fragment" style="border-left: 4px solid #001E61; padding: 0.2em 0.7em">
 <p>“If there’s a case that this emulation is producing scientifically acceptable results, then suddenly our FP64 cost is now divided by 2X to 3X without actually changing the chip.”</p>
 <p><span style="color: #666">Dan Stanzione, TACC <span class="citation" data-cites="morgan2026tacc">(<a href="#/references" role="doc-biblioref" onclick="">Prickett Morgan 2026</a>)</span></span></p>
 </div>
-<div class="fragment" style="border-left: 4px solid #1c4e8a; padding: 0.2em 0.7em">
+<div class="fragment" style="border-left: 4px solid #001E61; padding: 0.2em 0.7em">
 <p>“If you get to wrong answers really fast, that’s not helping anybody. We want to get to right answers fast.”</p>
 <p><span style="color: #666">Joseph George, AMD <span class="citation" data-cites="woodie2026fp8">(<a href="#/references" role="doc-biblioref" onclick="">Woodie 2026a</a>)</span></span></p>
 </div>
@@ -466,7 +467,7 @@ a_{ij} = \underbrace{(\text{rand} - 0.5)}_{\text{uniform mantissa}} \times \unde
 <section id="the-trade-off-in-the-results" class="slide level2">
 <h2>The trade-off in the results</h2>
 <p><span style="font-size: 0.7em; color: #666">Method → <strong>Trade-off</strong> → Purpose</span></p>
-<p><span style="font-size: 0.6em"><strong>M1</strong> FP64 · <strong>M2</strong> <code>lssresidual</code> (INTLAB) · <span style="color: #d9480f"><strong>M3–M5</strong> Ozaki scheme, 2, 3, 4 slices</span> · <strong>M6</strong> XBLAS</span></p>
+<p><span style="font-size: 0.6em"><strong>M1</strong> FP64 · <strong>M2</strong> <code>lssresidual</code> (INTLAB) · <span style="color: #D50032"><strong>M3–M5</strong> Ozaki scheme, 2, 3, 4 slices</span> · <strong>M6</strong> XBLAS</span></p>
 <div class="columns">
 <div class="column" style="width:56%;">
 <p><span style="font-size: 0.55em"><strong>Accuracy</strong> (maximum componentwise relative error)</span></p>
@@ -504,7 +505,7 @@ a_{ij} = \underbrace{(\text{rand} - 0.5)}_{\text{uniform mantissa}} \times \unde
 </section>
 <section id="takeaways-ozaki-et-al.-2012" class="slide level2">
 <h2>Takeaways: Ozaki et al.&nbsp;(2012)</h2>
-<div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc">
+<div style="border: 2px solid #001E61; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc">
 <p><strong>Role:</strong> A faster way of performing accurate matrix multiplication</p>
 <div class="fragment">
 <p><strong>Trade-off:</strong> Magnitude range determines the slice count, which trades accuracy against performance and memory</p>
@@ -539,7 +540,7 @@ a_{ij} = \underbrace{(\text{rand} - 0.5)}_{\text{uniform mantissa}} \times \unde
 <p><em>DGEMM on integer matrix multiplication unit</em></p>
 <p><span style="font-size: 0.6em; color: #666">Hiroyuki Ootomo, Katsuhisa Ozaki, Rio Yokota · <em>The International Journal of High Performance Computing Applications</em>, 2024 <span class="citation" data-cites="ootomo2024">(<a href="#/references" role="doc-biblioref" onclick="">Ootomo et al. 2024</a>)</span></span></p>
 <div class="fragment">
-<div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1em; margin: 0.8em auto 0; background: #eef4fc; width: 70%; text-align: center">
+<div style="border: 2px solid #001E61; border-radius: 8px; padding: 0.8em 1em; margin: 0.8em auto 0; background: #eef4fc; width: 70%; text-align: center">
 <p><strong>The Ozaki scheme on integer Tensor Cores (INT8)</strong></p>
 </div>
 </div>
@@ -656,7 +657,7 @@ AB \approx \sum_{i + j \,\le\, s + 1} A^{(i)} B^{(j)}
 </section>
 <section id="takeaways-ootomo-et-al.-2024" class="slide level2">
 <h2>Takeaways: Ootomo et al.&nbsp;(2024)</h2>
-<div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc">
+<div style="border: 2px solid #001E61; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc">
 <p><strong>Role:</strong> Faster than the standard DGEMM routine, on some hardware</p>
 <div class="fragment">
 <p><strong>Trade-off:</strong> Unchanged, but with more (smaller) slices, and users still tune the slice count manually</p>
@@ -677,7 +678,7 @@ AB \approx \sum_{i + j \,\le\, s + 1} A^{(i)} B^{(j)}
 <p>2025: FP64 emulation added to cuBLAS <span class="citation" data-cites="nvidia2025emulation">(<a href="#/references" role="doc-biblioref" onclick="">NVIDIA 2025</a>)</span></p>
 </div>
 <div class="fragment">
-<div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1em; margin: 0.6em auto 0; background: #eef4fc; width: 70%; text-align: center">
+<div style="border: 2px solid #001E61; border-radius: 8px; padding: 0.8em 1em; margin: 0.6em auto 0; background: #eef4fc; width: 70%; text-align: center">
 <p><strong>Use emulation when it is beneficial, and standard DGEMM when it is not</strong></p>
 </div>
 </div>
@@ -821,7 +822,7 @@ AB \approx \sum_{i + j \,\le\, s + 1} A^{(i)} B^{(j)}
 </section>
 <section id="takeaways-schwarz-et-al.-2026" class="slide level2">
 <h2>Takeaways: Schwarz et al.&nbsp;(2026)</h2>
-<div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc">
+<div style="border: 2px solid #001E61; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc">
 <p><strong>Role:</strong> FP64 emulation, a drop-in replacement for DGEMM used only when it is beneficial</p>
 <div class="fragment">
 <p><strong>Trade-off:</strong> Handled automatically by ESC and ADP, but how ADP makes that call is not described</p>
@@ -863,7 +864,7 @@ Martin Ganahl <span style="color: #666">SandboxAQ</span><br>
 Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for Physics</span></span></p>
 <p>Published in <em>Journal of Chemical Theory and Computation</em>, 2026 <span class="citation" data-cites="brower2026">(<a href="#/references" role="doc-biblioref" onclick="">Brower et al. 2026</a>)</span></p>
 </div><div class="column fragment" style="width:40%;">
-<div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1em; margin-top: 1.2em; background: #eef4fc">
+<div style="border: 2px solid #001E61; border-radius: 8px; padding: 0.8em 1em; margin-top: 1.2em; background: #eef4fc">
 <p><strong>Ozaki emulation in an actual scientific application</strong></p>
 </div>
 </div></div>
@@ -960,7 +961,7 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 </section>
 <section id="takeaways-brower-et-al.-2026" class="slide level2">
 <h2>Takeaways: Brower et al.&nbsp;(2026)</h2>
-<div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc">
+<div style="border: 2px solid #001E61; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc">
 <p><strong>Role:</strong> FP64 emulation inside a real scientific code, with the library deciding DGEMM by DGEMM</p>
 <div class="fragment">
 <p><strong>Trade-off:</strong> Accuracy holds with few slices, but speedup depends on DGEMM size, which is set by sector sizes, not <span class="math inline">\(D\)</span></p>
@@ -976,25 +977,25 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 <h2>Tracing the Ozaki scheme</h2>
 <p><span style="font-size: 0.7em; color: #666"><strong>Evidence</strong> → Hardware and Inputs → Variable Precision → Future Work</span></p>
 <div style="display: flex; align-items: stretch; justify-content: space-between; gap: 0.3em; margin-top: 1.0em; font-size: 0.55em; text-align: center">
-  <div style="flex: 2; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div style="flex: 2; border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc">
     <b>Accurate matrix products on CPUs</b><br><span style="color: #666">Ozaki et al. (2012)</span>
   </div>
-  <div class="fragment" data-fragment-index="1" style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; color: #d9480f">
+  <div class="fragment" data-fragment-index="1" style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; color: #D50032">
     <span style="font-size: 2em">→</span><b>Hardware</b>
   </div>
-  <div class="fragment" data-fragment-index="1" style="flex: 2; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div class="fragment" data-fragment-index="1" style="flex: 2; border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc">
     <b>Faster than FP64 on integer Tensor Cores</b><br><span style="color: #666">Ootomo et al. (2024)</span>
   </div>
-  <div class="fragment" data-fragment-index="2" style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; color: #d9480f">
+  <div class="fragment" data-fragment-index="2" style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; color: #D50032">
     <span style="font-size: 2em">→</span><b>Usability</b>
   </div>
-  <div class="fragment" data-fragment-index="2" style="flex: 2; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div class="fragment" data-fragment-index="2" style="flex: 2; border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc">
     <b>Drop-in FP64 replacement in cuBLAS</b><br><span style="color: #666">Schwarz et al. (2026)</span>
   </div>
-  <div class="fragment" data-fragment-index="3" style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; color: #d9480f">
+  <div class="fragment" data-fragment-index="3" style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; color: #D50032">
     <span style="font-size: 2em">→</span><b>Stability</b>
   </div>
-  <div class="fragment" data-fragment-index="3" style="flex: 2; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div class="fragment" data-fragment-index="3" style="flex: 2; border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc">
     <b>FP64 emulation in a scientific application</b><br><span style="color: #666">Brower et al. (2026)</span>
   </div>
 </div>
@@ -1121,13 +1122,13 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 <h2>Hardware is not the only factor</h2>
 <p><span style="font-size: 0.7em; color: #666">Evidence → <strong>Hardware and Inputs</strong> → Variable Precision → Future Work</span></p>
 <div style="display: flex; gap: 0.8em; margin-top: 0.8em; font-size: 0.65em; text-align: center">
-  <div style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div style="flex: 1; border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc">
     <b>Hardware</b><br><span style="color: #666">FP64 : INT8 throughput ratio</span>
   </div>
-  <div class="fragment" style="flex: 1; border: 2px solid #d9480f; border-radius: 8px; padding: 0.6em; background: #fff4e6">
+  <div class="fragment" style="flex: 1; border: 2px solid #D50032; border-radius: 8px; padding: 0.6em; background: #FCEBEF">
     <b>Data</b><br><span style="color: #666">Magnitude range of the inputs</span>
   </div>
-  <div class="fragment" style="flex: 1; border: 2px solid #d9480f; border-radius: 8px; padding: 0.6em; background: #fff4e6">
+  <div class="fragment" style="flex: 1; border: 2px solid #D50032; border-radius: 8px; padding: 0.6em; background: #FCEBEF">
     <b>Size/Shape</b><br><span style="color: #666">Matrix dimensions</span>
   </div>
 </div>
@@ -1153,10 +1154,10 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 <h2>Does emulation help me?</h2>
 <p><span style="font-size: 0.7em; color: #666">Evidence → <strong>Hardware and Inputs</strong> → Variable Precision → Future Work</span></p>
 <div style="display: flex; gap: 0.8em; margin-top: 0.8em; font-size: 0.6em; text-align: center">
-  <div class="fragment" style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div class="fragment" style="flex: 1; border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc">
     <b>What matrices does emulation speed up?</b><br><span style="color: #666">A broad study across magnitude ranges, structures, and shapes</span>
   </div>
-  <div class="fragment" style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div class="fragment" style="flex: 1; border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc">
     <b>What workloads does emulation speed up?</b><br><span style="color: #666">A faster matrix multiplication phase can still mean a net slowdown</span>
   </div>
 </div>
@@ -1185,11 +1186,11 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 <h2>A variable-precision method</h2>
 <p><span style="font-size: 0.7em; color: #666">Evidence → Hardware and Inputs → <strong>Variable Precision</strong> → Future Work</span></p>
 <div style="display: flex; align-items: center; justify-content: center; gap: 0.5em; margin-top: 0.6em; font-size: 0.6em; text-align: center">
-  <div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc"><b>More accurate products</b><br><span style="color: #666">2012</span></div>
-  <span style="font-size: 2em; color: #d9480f">→</span>
-  <div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc"><b>Replacement for FP64</b><br><span style="color: #666">2024–2026</span></div>
-  <span class="fragment" data-fragment-index="1" style="font-size: 2em; color: #d9480f">→</span>
-  <div class="fragment" data-fragment-index="1" style="border: 2px solid #d9480f; border-radius: 8px; padding: 0.6em; background: #fff4e6"><b>Variable precision</b></div>
+  <div style="border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc"><b>More accurate products</b><br><span style="color: #666">2012</span></div>
+  <span style="font-size: 2em; color: #D50032">→</span>
+  <div style="border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc"><b>Replacement for FP64</b><br><span style="color: #666">2024–2026</span></div>
+  <span class="fragment" data-fragment-index="1" style="font-size: 2em; color: #D50032">→</span>
+  <div class="fragment" data-fragment-index="1" style="border: 2px solid #D50032; border-radius: 8px; padding: 0.6em; background: #FCEBEF"><b>Variable precision</b></div>
 </div>
 <p><br></p>
 <div class="fragment">
@@ -1316,13 +1317,13 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 <section id="conclusion-1" class="slide level2">
 <h2>Conclusion</h2>
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.3em; margin-top: 0.6em; font-size: 0.5em; text-align: center">
-  <div style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.5em; background: #eef4fc"><b>Accurate products on CPUs</b><br><span style="color: #666">Ozaki et al. (2012)</span></div>
-  <span style="color: #d9480f">→</span>
-  <div style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.5em; background: #eef4fc"><b>Integer Tensor Cores</b><br><span style="color: #666">Ootomo et al. (2024)</span></div>
-  <span style="color: #d9480f">→</span>
-  <div style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.5em; background: #eef4fc"><b>cuBLAS with ADP</b><br><span style="color: #666">Schwarz et al. (2026)</span></div>
-  <span style="color: #d9480f">→</span>
-  <div style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.5em; background: #eef4fc"><b>DMRG</b><br><span style="color: #666">Brower et al. (2026)</span></div>
+  <div style="flex: 1; border: 2px solid #001E61; border-radius: 8px; padding: 0.5em; background: #eef4fc"><b>Accurate products on CPUs</b><br><span style="color: #666">Ozaki et al. (2012)</span></div>
+  <span style="color: #D50032">→</span>
+  <div style="flex: 1; border: 2px solid #001E61; border-radius: 8px; padding: 0.5em; background: #eef4fc"><b>Integer Tensor Cores</b><br><span style="color: #666">Ootomo et al. (2024)</span></div>
+  <span style="color: #D50032">→</span>
+  <div style="flex: 1; border: 2px solid #001E61; border-radius: 8px; padding: 0.5em; background: #eef4fc"><b>cuBLAS with ADP</b><br><span style="color: #666">Schwarz et al. (2026)</span></div>
+  <span style="color: #D50032">→</span>
+  <div style="flex: 1; border: 2px solid #001E61; border-radius: 8px; padding: 0.5em; background: #eef4fc"><b>DMRG</b><br><span style="color: #666">Brower et al. (2026)</span></div>
 </div>
 <p><br></p>
 <div class="fragment">
@@ -1379,25 +1380,26 @@ Woodie, Alex. 2026b. <em>Genesis Mission Will Lean Heavily on <span>Ozaki</span>
 </section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="../figures/University_of_Illinois_at_Chicago_circle_logo.svg" class="slide-logo"></p>
 <div class="footer footer-default">
 
 </div>
 </div></div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="slides_draft3_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="slides_final_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="slides_draft3_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="slides_draft3_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="slides_draft3_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="slides_draft3_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="slides_draft3_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="slides_final_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="slides_final_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="slides_final_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="slides_final_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="slides_final_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="slides_draft3_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="slides_draft3_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="slides_draft3_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="slides_draft3_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="slides_final_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="slides_final_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="slides_final_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="slides_final_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>
@@ -1433,7 +1435,7 @@ Woodie, Alex. 2026b. <em>Genesis Mission Will Lean Heavily on <span>Ozaki</span>
         progress: true,
 
         // Display the page number of the current slide
-        slideNumber: 'c/t',
+        slideNumber: false,
 
         // 'all', 'print', or 'speaker'
         showSlideNumber: 'all',

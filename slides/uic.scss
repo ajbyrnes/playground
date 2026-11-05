@@ -1,22 +1,28 @@
 /*-- scss:defaults --*/
-// UIC brand colors (verify against brand.uic.edu)
-$uic-navy: #001E62;
-$uic-red:  #D50032;
+// UIC brand palette, from the official UIC PowerPoint template (theme "UIC Brand Palette")
+$uic-navy:       #001E61;
+$uic-red:        #D50032;
+$uic-light-blue: #A6C5D7;
+$uic-teal:       #3C8DA3;
+$uic-charcoal:   #343333;
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@500;700&family=Roboto:ital,wght@0,400;0,700;1,400&display=swap');
+// Template fonts: Bricolage Grotesque ExtraBold for titles, Arial for body,
+// Azeret Mono for small uppercase labels
+@import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,800&display=swap');
 
 $body-bg: #ffffff;
-$body-color: #1f2430;
-$link-color: $uic-red;
-$font-family-sans-serif: "Roboto", "Helvetica Neue", Arial, sans-serif;
-$presentation-heading-font: "Roboto Condensed", "Helvetica Neue", Arial, sans-serif;
+$body-color: $uic-charcoal;
+$link-color: $uic-teal;
+$font-family-sans-serif: Arial, "Helvetica Neue", Helvetica, sans-serif;
+$presentation-heading-font: "Bricolage Grotesque", Arial, sans-serif;
 $presentation-heading-color: $uic-navy;
 $presentation-heading-text-transform: none;
+$presentation-heading-letter-spacing: -0.02em;
 
 /*-- scss:rules --*/
-// Slide titles: navy with a short red rule underneath
+// Slide titles: navy ExtraBold with a short red rule underneath
 .reveal h2 {
-  font-weight: 700;
+  font-weight: 800;
   padding-bottom: 0.15em;
   border-bottom: 3px solid $uic-red;
   display: inline-block;
@@ -26,7 +32,7 @@ $presentation-heading-text-transform: none;
 .reveal h1,
 .reveal section.has-light-background h1,
 .reveal section.has-light-background h2 {
-  font-weight: 700;
+  font-weight: 800;
   color: $uic-navy;
 }
 .reveal section.level1 h1::before {
@@ -43,7 +49,22 @@ $presentation-heading-text-transform: none;
 .reveal .title-slide .subtitle,
 .reveal .quarto-title-block .subtitle { color: $uic-red; }
 .reveal .title-slide .institute,
-.reveal .title-slide .date { color: #555; }
+.reveal .title-slide .date {
+  color: #555;
+  font-family: "Azeret Mono", monospace;
+  font-size: 0.7em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+// Section tracker styled like the template's mono "kicker" labels
+.reveal .section-tracker {
+  font-family: "Azeret Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: $uic-navy;
+}
+.reveal .section-tracker .dot.here { background: $uic-red; border-color: $uic-red; }
 
 // Bold terms pick up the brand navy
 .reveal strong { color: $uic-navy; }
@@ -51,6 +72,5 @@ $presentation-heading-text-transform: none;
 // Tables: navy header rule
 .reveal table thead th { border-bottom: 2px solid $uic-navy; }
 
-// Slide number + progress bar
-.reveal .slide-number { color: $uic-navy; background: transparent; }
+// Progress bar
 .reveal .progress { color: $uic-red; }

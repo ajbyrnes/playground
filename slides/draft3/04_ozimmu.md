@@ -36,7 +36,7 @@
 
 . . .
 
-::: {style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1em; margin: 0.8em auto 0; background: #eef4fc; width: 70%; text-align: center"}
+::: {style="border: 2px solid #001E61; border-radius: 8px; padding: 0.8em 1em; margin: 0.8em auto 0; background: #eef4fc; width: 70%; text-align: center"}
 **The Ozaki scheme on integer Tensor Cores (INT8)**
 :::
 
@@ -173,7 +173,7 @@ Users have to manually tune the slice count, based on:
 
 ## Takeaways: Ootomo et al. (2024)
 
-::: {style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc"}
+::: {style="border: 2px solid #001E61; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc"}
 **Role:** Faster than the standard DGEMM routine, on some hardware
 
 . . .

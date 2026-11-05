@@ -3,11 +3,13 @@ title: "The Ozaki Scheme"
 subtitle: "Emulating FP64 matrix multiplication on low-precision hardware"
 author: "A. J. Byrnes"
 institute: "University of Illinois Chicago"
-date: last-modified
+date: 2026-11-05
+date-format: long
 format:
   revealjs:
     theme: simple
-    slide-number: c/t
+    logo: ../figures/University_of_Illinois_at_Chicago_circle_logo.svg
+    css: logo.css
     width: 1280
     height: 720
     html-math-method: mathjax

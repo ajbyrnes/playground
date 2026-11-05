@@ -146,7 +146,7 @@ We'll keep seeing matrices like these in the later evaluations.
 
 [Method → **Trade-off** → Purpose]{style="font-size: 0.7em; color: #666"}
 
-[**M1** FP64 · **M2** `lssresidual` (INTLAB) · [**M3–M5** Ozaki scheme, 2, 3, 4 slices]{style="color: #d9480f"} · **M6** XBLAS]{style="font-size: 0.6em"}
+[**M1** FP64 · **M2** `lssresidual` (INTLAB) · [**M3–M5** Ozaki scheme, 2, 3, 4 slices]{style="color: #D50032"} · **M6** XBLAS]{style="font-size: 0.6em"}
 
 ::::: columns
 ::: {.column width="56%"}
@@ -198,7 +198,7 @@ This also makes it promising as a method that could be integrated transparently 
 
 ## Takeaways: Ozaki et al. (2012)
 
-::: {style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc"}
+::: {style="border: 2px solid #001E61; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc"}
 **Role:** A faster way of performing accurate matrix multiplication
 
 . . .

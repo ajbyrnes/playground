@@ -8,25 +8,25 @@
 
 ```{=html}
 <div style="display: flex; align-items: stretch; justify-content: space-between; gap: 0.3em; margin-top: 1.0em; font-size: 0.55em; text-align: center">
-  <div style="flex: 2; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div style="flex: 2; border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc">
     <b>Accurate matrix products on CPUs</b><br><span style="color: #666">Ozaki et al. (2012)</span>
   </div>
-  <div class="fragment" data-fragment-index="1" style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; color: #d9480f">
+  <div class="fragment" data-fragment-index="1" style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; color: #D50032">
     <span style="font-size: 2em">→</span><b>Hardware</b>
   </div>
-  <div class="fragment" data-fragment-index="1" style="flex: 2; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div class="fragment" data-fragment-index="1" style="flex: 2; border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc">
     <b>Faster than FP64 on integer Tensor Cores</b><br><span style="color: #666">Ootomo et al. (2024)</span>
   </div>
-  <div class="fragment" data-fragment-index="2" style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; color: #d9480f">
+  <div class="fragment" data-fragment-index="2" style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; color: #D50032">
     <span style="font-size: 2em">→</span><b>Usability</b>
   </div>
-  <div class="fragment" data-fragment-index="2" style="flex: 2; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div class="fragment" data-fragment-index="2" style="flex: 2; border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc">
     <b>Drop-in FP64 replacement in cuBLAS</b><br><span style="color: #666">Schwarz et al. (2026)</span>
   </div>
-  <div class="fragment" data-fragment-index="3" style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; color: #d9480f">
+  <div class="fragment" data-fragment-index="3" style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; color: #D50032">
     <span style="font-size: 2em">→</span><b>Stability</b>
   </div>
-  <div class="fragment" data-fragment-index="3" style="flex: 2; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div class="fragment" data-fragment-index="3" style="flex: 2; border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc">
     <b>FP64 emulation in a scientific application</b><br><span style="color: #666">Brower et al. (2026)</span>
   </div>
 </div>
@@ -128,13 +128,13 @@ At the very least, emulation means we can squeeze some FP64 performance out of l
 
 ```{=html}
 <div style="display: flex; gap: 0.8em; margin-top: 0.8em; font-size: 0.65em; text-align: center">
-  <div style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div style="flex: 1; border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc">
     <b>Hardware</b><br><span style="color: #666">FP64 : INT8 throughput ratio</span>
   </div>
-  <div class="fragment" style="flex: 1; border: 2px solid #d9480f; border-radius: 8px; padding: 0.6em; background: #fff4e6">
+  <div class="fragment" style="flex: 1; border: 2px solid #D50032; border-radius: 8px; padding: 0.6em; background: #FCEBEF">
     <b>Data</b><br><span style="color: #666">Magnitude range of the inputs</span>
   </div>
-  <div class="fragment" style="flex: 1; border: 2px solid #d9480f; border-radius: 8px; padding: 0.6em; background: #fff4e6">
+  <div class="fragment" style="flex: 1; border: 2px solid #D50032; border-radius: 8px; padding: 0.6em; background: #FCEBEF">
     <b>Size/Shape</b><br><span style="color: #666">Matrix dimensions</span>
   </div>
 </div>
@@ -156,10 +156,10 @@ The problem with the "just build low-precision chips" view: hardware is the prim
 
 ```{=html}
 <div style="display: flex; gap: 0.8em; margin-top: 0.8em; font-size: 0.6em; text-align: center">
-  <div class="fragment" style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div class="fragment" style="flex: 1; border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc">
     <b>What matrices does emulation speed up?</b><br><span style="color: #666">A broad study across magnitude ranges, structures, and shapes</span>
   </div>
-  <div class="fragment" style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+  <div class="fragment" style="flex: 1; border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc">
     <b>What workloads does emulation speed up?</b><br><span style="color: #666">A faster matrix multiplication phase can still mean a net slowdown</span>
   </div>
 </div>
@@ -187,11 +187,11 @@ For the most part, every Ozaki implementation we've seen is evaluated on the sam
 
 ```{=html}
 <div style="display: flex; align-items: center; justify-content: center; gap: 0.5em; margin-top: 0.6em; font-size: 0.6em; text-align: center">
-  <div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc"><b>More accurate products</b><br><span style="color: #666">2012</span></div>
-  <span style="font-size: 2em; color: #d9480f">→</span>
-  <div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc"><b>Replacement for FP64</b><br><span style="color: #666">2024–2026</span></div>
-  <span class="fragment" data-fragment-index="1" style="font-size: 2em; color: #d9480f">→</span>
-  <div class="fragment" data-fragment-index="1" style="border: 2px solid #d9480f; border-radius: 8px; padding: 0.6em; background: #fff4e6"><b>Variable precision</b></div>
+  <div style="border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc"><b>More accurate products</b><br><span style="color: #666">2012</span></div>
+  <span style="font-size: 2em; color: #D50032">→</span>
+  <div style="border: 2px solid #001E61; border-radius: 8px; padding: 0.6em; background: #eef4fc"><b>Replacement for FP64</b><br><span style="color: #666">2024–2026</span></div>
+  <span class="fragment" data-fragment-index="1" style="font-size: 2em; color: #D50032">→</span>
+  <div class="fragment" data-fragment-index="1" style="border: 2px solid #D50032; border-radius: 8px; padding: 0.6em; background: #FCEBEF"><b>Variable precision</b></div>
 </div>
 ```
 

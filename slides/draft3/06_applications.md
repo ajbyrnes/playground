@@ -47,7 +47,7 @@ Published in *Journal of Chemical Theory and Computation*, 2026 [@brower2026]
 :::
 
 ::: {.column .fragment width="40%"}
-::: {style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1em; margin-top: 1.2em; background: #eef4fc"}
+::: {style="border: 2px solid #001E61; border-radius: 8px; padding: 0.8em 1em; margin-top: 1.2em; background: #eef4fc"}
 **Ozaki emulation in an actual scientific application**
 :::
 :::
@@ -167,7 +167,7 @@ Native FP64 vs. performant emulation on B200, with H100 for reference
 
 ## Takeaways: Brower et al. (2026)
 
-::: {style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc"}
+::: {style="border: 2px solid #001E61; border-radius: 8px; padding: 0.8em 1.2em; margin-top: 1.2em; background: #eef4fc"}
 **Role:** FP64 emulation inside a real scientific code, with the library deciding DGEMM by DGEMM
 
 . . .
