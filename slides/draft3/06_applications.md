@@ -27,7 +27,7 @@ With ADP: 3.5× faster, error 7e-16
 :::::
 
 ::: fragment
-**QR is technically an application of matrix multiplication, but not a scientific application.**
+**Neither is a full, end-to-end application workload.**
 :::
 
 ## Brower et al. (2026)
@@ -114,7 +114,13 @@ The matrices in DMRG are $D \times D$. Symmetries split them into smaller blocks
 <br>
 
 ::: fragment
-**Performant:** The library decides. Matches FP64, slightly faster at $D = 8192$.
+**Performant:** The library decides. Tracks native FP64: It appears to always choose *not* to emulate.
+:::
+
+<br>
+
+::: fragment
+**The fallback works, but that's a bad sign for "emulation speeds up workloads."**
 :::
 :::
 :::::
@@ -133,7 +139,7 @@ The matrices in DMRG are $D \times D$. Symmetries split them into smaller blocks
 Native FP64 vs. performant emulation on B200, with H100 for reference
 
 ::: fragment
-**Performant mode tracks native FP64.** Slight gains only for the largest $D$ and systems.
+**Performant mode tracks native FP64:** Even at scale, it appears to choose native DGEMM.
 :::
 :::
 :::

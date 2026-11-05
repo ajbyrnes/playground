@@ -35,7 +35,7 @@
 <br>
 
 ::: {.fragment fragment-index="4"}
-**From a method for accurate matrix multiplication that was never expected to compete with FP64 on speed, to a potential FP64-killer**
+**From accurate matrix multiplication to potential FP64 replacement**
 :::
 
 ::: notes
@@ -135,7 +135,7 @@ At the very least, emulation means we can squeeze some FP64 performance out of l
     <b>Data</b><br><span style="color: #666">Magnitude range of the inputs</span>
   </div>
   <div class="fragment" style="flex: 1; border: 2px solid #d9480f; border-radius: 8px; padding: 0.6em; background: #fff4e6">
-    <b>Size</b><br><span style="color: #666">Matrix dimensions</span>
+    <b>Size/Shape</b><br><span style="color: #666">Matrix dimensions</span>
   </div>
 </div>
 ```
@@ -198,7 +198,7 @@ For the most part, every Ozaki implementation we've seen is evaluated on the sam
 <br>
 
 ::: fragment
-Each 8-bit integer slice adds another 8 bits of mantissa. Nothing requires stopping at FP64's 53.
+Each 8-bit integer slice adds another 8 bits of mantissa. Change the number of slices, and we get more or fewer bits than FP64's 53.
 :::
 
 ::: fragment
@@ -207,6 +207,8 @@ Each 8-bit integer slice adds another 8 bits of mantissa. Nothing requires stopp
 
 ::: notes
 This is the main argument of the talk. In the 2012 formulation, the slices live inside FP64's fixed 53-bit mantissa, so the slice count has a ceiling. With integer slices, that ceiling is gone. Schwarz et al. hint at this by describing ESC in terms of mantissa bit coverage, not FP64-equivalence. Brower et al. show it in practice. The same knob that dials precision below FP64 dials it above FP64 too.
+
+In principle, you could have higher precisions. The 2012 scheme was built for results more accurate than FP64. The emulation implementations accumulate into FP64 and target FP64-equivalence, so they give that up. But the need for higher accuracy still exists in scientific workloads, and we don't know how emulation interacts with other high-accuracy methods.
 :::
 
 ## The question changes
@@ -244,11 +246,12 @@ The mixed-precision computing community has been developing tools to answer that
 | Net performance of full workloads on emulation-favoring hardware | Benchmarks of one matrix product at a time |
 | Memory overhead and data movement in full applications | Rarely reported in detail |
 | Slice count chosen from an application-level accuracy target | ADP's fixed FP64 target |
+| Interaction with high-accuracy methods | FP64-equivalence as the target |
 | Older numerical techniques that fit modern GPUs' asymmetric throughput | The Ozaki scheme itself: 2012 → 2024 |
 :::
 
 ::: notes
 Each gap comes from something earlier in the talk.
 
-Failure: there may be some domain that frequently works with matrices that are adversarial to emulation. Workloads: a matrix multiplication phase that speeds up doesn't mean the whole workload does, if the other phases run slower on the same hardware. Memory: not just "how much more memory to allocate," but how data movement in an application changes when the working set blows up with matrix slices. Slice count: ADP makes a binary decision with the accuracy target fixed to FP64; a runtime that picks the slice count from application-level accuracy requirements would widen the scheme's useful range considerably. That's the variable-precision framing turned into a tool. Older techniques: the Ozaki scheme was impractical on throughput for over a decade until the hardware arrived; other techniques might be in the same spot.
+Failure: there may be some domain that frequently works with matrices that are adversarial to emulation. Workloads: a matrix multiplication phase that speeds up doesn't mean the whole workload does, if the other phases run slower on the same hardware. Memory: not just "how much more memory to allocate," but how data movement in an application changes when the working set blows up with matrix slices. Slice count: ADP makes a binary decision with the accuracy target fixed to FP64; a runtime that picks the slice count from application-level accuracy requirements would widen the scheme's useful range considerably. That's the variable-precision framing turned into a tool. High accuracy: the FP64-accurate implementations give up on going past FP64, but scientific workloads that need more than FP64 still exist, and nobody has looked at how emulation interacts with high-accuracy methods. Older techniques: the Ozaki scheme was impractical on throughput for over a decade until the hardware arrived; other techniques might be in the same spot.
 :::

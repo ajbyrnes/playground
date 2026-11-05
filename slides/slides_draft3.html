@@ -771,26 +771,29 @@ AB \approx \sum_{i + j \,\le\, s + 1} A^{(i)} B^{(j)}
 <li><strong>Variants:</strong> With and without fallback to native DGEMM</li>
 </ul>
 </section>
-<section id="evaluation" class="slide level2">
-<h2>Evaluation</h2>
+<section id="evaluation-accuracy" class="slide level2">
+<h2>Evaluation: Accuracy</h2>
 <p><span style="font-size: 0.7em; color: #666">FP64 Emulation → ESC → <strong>ADP</strong></span></p>
-<div class="columns">
-<div class="column" style="width:48%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="../figures/papers/schwarz/fig02.png" class="quarto-figure quarto-figure-center" height="300"></p>
+<p><img data-src="../figures/papers/schwarz/fig02.png" class="quarto-figure quarto-figure-center" height="440"></p>
 </figure>
 </div>
-</div><div class="column" style="width:52%;">
+<div class="fragment">
+<p><strong>With fallback:</strong> Accuracy indistinguishable from native DGEMM.</p>
+</div>
+</section>
+<section id="evaluation-speed" class="slide level2">
+<h2>Evaluation: Speed</h2>
+<p><span style="font-size: 0.7em; color: #666">FP64 Emulation → ESC → <strong>ADP</strong></span></p>
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="../figures/papers/schwarz/fig06.png" class="quarto-figure quarto-figure-center" height="300"></p>
+<p><img data-src="../figures/papers/schwarz/fig06.png" class="quarto-figure quarto-figure-center" height="510"></p>
 </figure>
 </div>
-</div></div>
 <p><span style="font-size: 0.5em; color: #666">FP64 : INT8 peak: <strong>GB200</strong> 1 : 125 · <strong>RTX Pro 6000</strong> 1 : 512</span></p>
 <div class="fragment">
-<p><strong>With fallback:</strong> Accuracy indistinguishable from native DGEMM. Up to 2.3× faster on GB200, and 13.2× on RTX Pro 6000.</p>
+<p><strong>With fallback:</strong> Up to 2.3× faster on GB200, and 13.2× on RTX Pro 6000.</p>
 </div>
 </section>
 <section id="what-the-evaluations-tell-us" class="slide level2">
@@ -845,7 +848,7 @@ AB \approx \sum_{i + j \,\le\, s + 1} A^{(i)} B^{(j)}
 <p>With ADP: 3.5× faster, error 7e-16</p>
 </div></div>
 <div class="fragment">
-<p><strong>QR is technically an application of matrix multiplication, but not a scientific application.</strong></p>
+<p><strong>Neither is a full, end-to-end application workload.</strong></p>
 </div>
 </section>
 <section id="brower-et-al.-2026" class="slide level2">
@@ -917,7 +920,11 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 </div>
 <p><br></p>
 <div class="fragment">
-<p><strong>Performant:</strong> The library decides. Matches FP64, slightly faster at <span class="math inline">\(D = 8192\)</span>.</p>
+<p><strong>Performant:</strong> The library decides. Tracks native FP64: It appears to always choose <em>not</em> to emulate.</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p><strong>The fallback works, but that’s a bad sign for “emulation speeds up workloads.”</strong></p>
 </div>
 </div></div>
 </section>
@@ -931,7 +938,7 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 <div style="font-size: 0.85em">
 <p>Native FP64 vs.&nbsp;performant emulation on B200, with H100 for reference</p>
 <div class="fragment">
-<p><strong>Performant mode tracks native FP64.</strong> Slight gains only for the largest <span class="math inline">\(D\)</span> and systems.</p>
+<p><strong>Performant mode tracks native FP64:</strong> Even at scale, it appears to choose native DGEMM.</p>
 </div>
 </div>
 </div></div>
@@ -993,7 +1000,7 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 </div>
 <p><br></p>
 <div class="fragment" data-fragment-index="4">
-<p><strong>From a method for accurate matrix multiplication that was never expected to compete with FP64 on speed, to a potential FP64-killer</strong></p>
+<p><strong>From accurate matrix multiplication to potential FP64 replacement</strong></p>
 </div>
 <aside class="notes">
 <p>Each work moved the scheme one step. Ozaki et al.&nbsp;established it as a viable method for accurate matrix multiplication, outperforming alternatives like XBLAS at comparable accuracy. Ootomo et al.&nbsp;showed that integer Tensor Cores can push it past native FP64 throughput on consumer GPUs, though not on datacenter chips with strong FP64. Schwarz et al.&nbsp;showed it can be deployed safely through ADP. Brower et al.&nbsp;confirmed the results carry over to at least one real scientific application, DMRG, with sustained accuracy across hundreds of iterations.</p>
@@ -1121,7 +1128,7 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
     <b>Data</b><br><span style="color: #666">Magnitude range of the inputs</span>
   </div>
   <div class="fragment" style="flex: 1; border: 2px solid #d9480f; border-radius: 8px; padding: 0.6em; background: #fff4e6">
-    <b>Size</b><br><span style="color: #666">Matrix dimensions</span>
+    <b>Size/Shape</b><br><span style="color: #666">Matrix dimensions</span>
   </div>
 </div>
 <p><br></p>
@@ -1186,13 +1193,14 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 </div>
 <p><br></p>
 <div class="fragment">
-<p>Each 8-bit integer slice adds another 8 bits of mantissa. Nothing requires stopping at FP64’s 53.</p>
+<p>Each 8-bit integer slice adds another 8 bits of mantissa. Change the number of slices, and we get more or fewer bits than FP64’s 53.</p>
 </div>
 <div class="fragment">
 <p><strong>Brower et al.:</strong> 4 and 6 slices, less than FP64, still chemical accuracy in DMRG.</p>
 </div>
 <aside class="notes">
 <p>This is the main argument of the talk. In the 2012 formulation, the slices live inside FP64’s fixed 53-bit mantissa, so the slice count has a ceiling. With integer slices, that ceiling is gone. Schwarz et al.&nbsp;hint at this by describing ESC in terms of mantissa bit coverage, not FP64-equivalence. Brower et al.&nbsp;show it in practice. The same knob that dials precision below FP64 dials it above FP64 too.</p>
+<p>In principle, you could have higher precisions. The 2012 scheme was built for results more accurate than FP64. The emulation implementations accumulate into FP64 and target FP64-equivalence, so they give that up. But the need for higher accuracy still exists in scientific workloads, and we don’t know how emulation interacts with other high-accuracy methods.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1266,6 +1274,10 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 <td style="text-align: left;">ADP’s fixed FP64 target</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">Interaction with high-accuracy methods</td>
+<td style="text-align: left;">FP64-equivalence as the target</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">Older numerical techniques that fit modern GPUs’ asymmetric throughput</td>
 <td style="text-align: left;">The Ozaki scheme itself: 2012 → 2024</td>
 </tr>
@@ -1274,7 +1286,7 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 </div>
 <aside class="notes">
 <p>Each gap comes from something earlier in the talk.</p>
-<p>Failure: there may be some domain that frequently works with matrices that are adversarial to emulation. Workloads: a matrix multiplication phase that speeds up doesn’t mean the whole workload does, if the other phases run slower on the same hardware. Memory: not just “how much more memory to allocate,” but how data movement in an application changes when the working set blows up with matrix slices. Slice count: ADP makes a binary decision with the accuracy target fixed to FP64; a runtime that picks the slice count from application-level accuracy requirements would widen the scheme’s useful range considerably. That’s the variable-precision framing turned into a tool. Older techniques: the Ozaki scheme was impractical on throughput for over a decade until the hardware arrived; other techniques might be in the same spot.</p>
+<p>Failure: there may be some domain that frequently works with matrices that are adversarial to emulation. Workloads: a matrix multiplication phase that speeds up doesn’t mean the whole workload does, if the other phases run slower on the same hardware. Memory: not just “how much more memory to allocate,” but how data movement in an application changes when the working set blows up with matrix slices. Slice count: ADP makes a binary decision with the accuracy target fixed to FP64; a runtime that picks the slice count from application-level accuracy requirements would widen the scheme’s useful range considerably. That’s the variable-precision framing turned into a tool. High accuracy: the FP64-accurate implementations give up on going past FP64, but scientific workloads that need more than FP64 still exist, and nobody has looked at how emulation interacts with high-accuracy methods. Older techniques: the Ozaki scheme was impractical on throughput for over a decade until the hardware arrived; other techniques might be in the same spot.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;

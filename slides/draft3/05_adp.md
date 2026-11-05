@@ -129,25 +129,27 @@ How the heuristic decides "emulation slower than FP64?" is not described.
 - **Accuracy:** Maximum componentwise relative error, against a standard FP64 matrix multiplication
 - **Variants:** With and without fallback to native DGEMM
 
-## Evaluation
+## Evaluation: Accuracy
 
 [FP64 Emulation → ESC → **ADP**]{style="font-size: 0.7em; color: #666"}
 
-::::: columns
-::: {.column width="48%"}
-![](../figures/papers/schwarz/fig02.png){height="300px" fig-align="center"}
-:::
+![](../figures/papers/schwarz/fig02.png){height="440px" fig-align="center"}
 
-::: {.column width="52%"}
-![](../figures/papers/schwarz/fig06.png){height="300px" fig-align="center"}
-:::
-:::::
+. . .
+
+**With fallback:** Accuracy indistinguishable from native DGEMM.
+
+## Evaluation: Speed
+
+[FP64 Emulation → ESC → **ADP**]{style="font-size: 0.7em; color: #666"}
+
+![](../figures/papers/schwarz/fig06.png){height="510px" fig-align="center"}
 
 [FP64 : INT8 peak: **GB200** 1 : 125 · **RTX Pro 6000** 1 : 512]{style="font-size: 0.5em; color: #666"}
 
 . . .
 
-**With fallback:** Accuracy indistinguishable from native DGEMM. Up to 2.3× faster on GB200, and 13.2× on RTX Pro 6000.
+**With fallback:** Up to 2.3× faster on GB200, and 13.2× on RTX Pro 6000.
 
 ## What the evaluations tell us
 
