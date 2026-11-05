@@ -963,10 +963,11 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 <section>
 <section id="discussion" class="title-slide slide level1 center" data-background-color="#eef4fc">
 <h1>Discussion</h1>
-
+<p><span style="color: #666">Evidence · Practicality · Variable Precision · Future Work</span></p>
 </section>
 <section id="tracing-the-ozaki-scheme" class="slide level2">
 <h2>Tracing the Ozaki scheme</h2>
+<p><span style="font-size: 0.7em; color: #666"><strong>Evidence</strong> → Practicality → Variable Precision → Future Work</span></p>
 <div style="display: flex; align-items: stretch; justify-content: space-between; gap: 0.3em; margin-top: 1.0em; font-size: 0.55em; text-align: center">
   <div style="flex: 2; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
     <b>Accurate matrix products on CPUs</b><br><span style="color: #666">Ozaki et al. (2012)</span>
@@ -997,6 +998,7 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 </section>
 <section id="performance-comes-from-hardware" class="slide level2">
 <h2>Performance comes from hardware</h2>
+<p><span style="font-size: 0.7em; color: #666"><strong>Evidence</strong> → Practicality → Variable Precision → Future Work</span></p>
 <div class="fragment">
 <p><strong>Integer slices don’t reduce the work:</strong> More slices (<span class="math inline">\(3 \to 9\)</span>), more slice products</p>
 </div>
@@ -1010,6 +1012,7 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 </section>
 <section id="nvidia-and-fp64" class="slide level2">
 <h2>NVIDIA and FP64</h2>
+<p><span style="font-size: 0.7em; color: #666"><strong>Evidence</strong> → Practicality → Variable Precision → Future Work</span></p>
 <div class="fragment">
 <p>NVIDIA cuts FP64 throughput: B200 37 → B300 1.3 TFLOP/s</p>
 </div>
@@ -1024,8 +1027,9 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 <p><strong>Emulation is most attractive exactly where FP64 has been deprioritized.</strong></p>
 </div>
 </section>
-<section id="what-we-can-conclude" class="slide level2">
-<h2>What we can conclude</h2>
+<section id="what-the-evidence-supports" class="slide level2">
+<h2>What the evidence supports</h2>
+<p><span style="font-size: 0.7em; color: #666"><strong>Evidence</strong> → Practicality → Variable Precision → Future Work</span></p>
 <div class="fragment">
 <p>Every speedup: On hardware where FP64 has been deprioritized for AI</p>
 </div>
@@ -1040,26 +1044,154 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 <p>It supports the moderate position: The Ozaki scheme is a useful tool where it is useful.</p>
 </div>
 </section>
+<section id="useful-where" class="slide level2">
+<h2>Useful where?</h2>
+<p><span style="font-size: 0.7em; color: #666">Evidence → <strong>Practicality</strong> → Variable Precision → Future Work</span></p>
+<p>Whether emulation beats native FP64 depends on three things:</p>
+<div style="display: flex; gap: 0.8em; margin-top: 0.8em; font-size: 0.65em; text-align: center">
+  <div class="fragment" style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+    <b>Hardware</b><br><span style="color: #666">FP64 : INT8 throughput ratio</span>
+  </div>
+  <div class="fragment" style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+    <b>Data</b><br><span style="color: #666">Magnitude range of the inputs</span>
+  </div>
+  <div class="fragment" style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc">
+    <b>Size</b><br><span style="color: #666">Matrix dimensions</span>
+  </div>
+</div>
+<p><br></p>
+<div class="fragment">
+<p><strong>The user has to know all three, or rely on ADP to decide for them.</strong></p>
+</div>
+</section>
+<section id="what-it-costs-to-use" class="slide level2">
+<h2>What it costs to use</h2>
+<p><span style="font-size: 0.7em; color: #666">Evidence → <strong>Practicality</strong> → Variable Precision → Future Work</span></p>
+<div class="fragment">
+<p><strong>Slice count:</strong> Bounds and ESC target FP64. No recipe for a less strict accuracy target.</p>
+</div>
+<div class="fragment">
+<p><strong>ESC:</strong> Measured on every pair of inputs. Amortizes when matrices are reused, not when they are new every iteration.</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p><strong>Choosing when and how to emulate is still a nontrivial burden, especially for portable codes.</strong></p>
+</div>
+</section>
+<section id="a-variable-precision-method" class="slide level2">
+<h2>A variable-precision method</h2>
+<p><span style="font-size: 0.7em; color: #666">Evidence → Practicality → <strong>Variable Precision</strong> → Future Work</span></p>
+<div style="display: flex; align-items: center; justify-content: center; gap: 0.5em; margin-top: 0.6em; font-size: 0.6em; text-align: center">
+  <div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc"><b>More accurate products</b><br><span style="color: #666">2012</span></div>
+  <span style="font-size: 2em; color: #d9480f">→</span>
+  <div style="border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.6em; background: #eef4fc"><b>Replacement for FP64</b><br><span style="color: #666">2024–2026</span></div>
+  <span class="fragment" data-fragment-index="1" style="font-size: 2em; color: #d9480f">→</span>
+  <div class="fragment" data-fragment-index="1" style="border: 2px solid #d9480f; border-radius: 8px; padding: 0.6em; background: #fff4e6"><b>Variable precision</b></div>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>Each 8-bit slice adds another 8 bits of mantissa. Nothing requires stopping at FP64’s 53.</p>
+</div>
+<div class="fragment">
+<p>Brower et al.: 4 and 6 slices, less than FP64, still usable in DMRG.</p>
+</div>
+</section>
+<section id="the-question-changes" class="slide level2">
+<h2>The question changes</h2>
+<p><span style="font-size: 0.7em; color: #666">Evidence → Practicality → <strong>Variable Precision</strong> → Future Work</span></p>
+<p><br></p>
+<div style="text-align: center">
+<p><del>Can emulation replace FP64 for this workload?</del></p>
+<div class="fragment">
+<p><strong>What precision does this workload actually need?</strong></p>
+</div>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>The mixed-precision community has been developing tools to answer this for over a decade.</p>
+</div>
+</section>
+<section id="mixed-precision-all-along" class="slide level2">
+<h2>Mixed precision all along</h2>
+<p><span style="font-size: 0.7em; color: #666">Evidence → Practicality → <strong>Variable Precision</strong> → Future Work</span></p>
+<p><strong>2012:</strong> Split FP64 into lower-precision slices, accumulate the products in FP64</p>
+<p><br></p>
+<div class="fragment">
+<p><strong>The scheme did not have to be adapted to Tensor Cores so much as finally met the hardware it had been describing all along.</strong></p>
+</div>
+</section>
 <section id="future-work" class="slide level2">
 <h2>Future work</h2>
-<ul>
-<li>A systematic characterization of how the scheme fails, on structured and real-application matrices</li>
-<li>A clearer picture of memory overhead in full applications</li>
-<li>Automatic slice-count selection below the FP64-equivalent bound: The scheme as a variable-precision method</li>
-<li>Lightweight heuristics for deciding when to emulate</li>
-</ul>
+<p><span style="font-size: 0.7em; color: #666">Evidence → Practicality → Variable Precision → <strong>Future Work</strong></span></p>
+<div style="font-size: 0.6em">
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Gap</th>
+<th style="text-align: left;">Comes from</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">How the scheme fails on structured and real-application matrices</td>
+<td style="text-align: left;">Synthetic test matrices</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Memory overhead in full applications</td>
+<td style="text-align: left;">Rarely reported in detail</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Slice-count selection from an application-level accuracy target</td>
+<td style="text-align: left;">Variable precision</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lightweight heuristics for deciding when to emulate</td>
+<td style="text-align: left;">ESC overhead on every product</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Older numerical techniques that fit modern hardware</td>
+<td style="text-align: left;">The Ozaki scheme itself: 2012 → 2024</td>
+</tr>
+</tbody>
+</table>
+</div>
 </section></section>
 <section>
 <section id="conclusion" class="title-slide slide level1 center" data-background-color="#eef4fc">
 <h1>Conclusion</h1>
-<!-- TODO: INT8 vs FP8 support, Ozaki-II -->
+
 </section>
-<section id="everything-else" class="slide level2">
-<h2>Everything else</h2>
-<ul>
-<li>Is INT8 support here to stay?</li>
-<li>Ozaki-II</li>
-</ul>
+<section id="open-questions" class="slide level2">
+<h2>Open questions</h2>
+<div class="fragment">
+<p><strong>Is INT8 support here to stay?</strong> The integer-slice formulations depend on it.</p>
+</div>
+<div class="fragment">
+<p><strong>Ozaki-II:</strong> The FP8 variant behind “FP8 is all you need.”</p>
+</div>
+</section>
+<section id="conclusion-1" class="slide level2">
+<h2>Conclusion</h2>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 0.3em; margin-top: 0.6em; font-size: 0.5em; text-align: center">
+  <div style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.5em; background: #eef4fc"><b>Accurate products on CPUs</b><br><span style="color: #666">Ozaki et al. (2012)</span></div>
+  <span style="color: #d9480f">→</span>
+  <div style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.5em; background: #eef4fc"><b>Integer Tensor Cores</b><br><span style="color: #666">Ootomo et al. (2024)</span></div>
+  <span style="color: #d9480f">→</span>
+  <div style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.5em; background: #eef4fc"><b>cuBLAS with ADP</b><br><span style="color: #666">Schwarz et al. (2026)</span></div>
+  <span style="color: #d9480f">→</span>
+  <div style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.5em; background: #eef4fc"><b>DMRG</b><br><span style="color: #666">Brower et al. (2026)</span></div>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>“We want to get to right answers fast.” Which answers are right depends on the precision each workload needs.</p>
+</div>
+<div class="fragment">
+<p><strong>The Ozaki scheme is best understood as a variable-precision method.</strong></p>
+</div>
 </section>
 <section id="references" class="slide level2 smaller scrollable">
 <h2>References</h2>

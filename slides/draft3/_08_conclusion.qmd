@@ -1,8 +1,35 @@
 # Conclusion {background-color="#eef4fc"}
 
-<!-- TODO: INT8 vs FP8 support, Ozaki-II -->
+## Open questions
 
-## Everything else
+::: fragment
+**Is INT8 support here to stay?** The integer-slice formulations depend on it.
+:::
 
-- Is INT8 support here to stay?
-- Ozaki-II
+::: fragment
+**Ozaki-II:** The FP8 variant behind "FP8 is all you need."
+:::
+
+## Conclusion
+
+```{=html}
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 0.3em; margin-top: 0.6em; font-size: 0.5em; text-align: center">
+  <div style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.5em; background: #eef4fc"><b>Accurate products on CPUs</b><br><span style="color: #666">Ozaki et al. (2012)</span></div>
+  <span style="color: #d9480f">→</span>
+  <div style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.5em; background: #eef4fc"><b>Integer Tensor Cores</b><br><span style="color: #666">Ootomo et al. (2024)</span></div>
+  <span style="color: #d9480f">→</span>
+  <div style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.5em; background: #eef4fc"><b>cuBLAS with ADP</b><br><span style="color: #666">Schwarz et al. (2026)</span></div>
+  <span style="color: #d9480f">→</span>
+  <div style="flex: 1; border: 2px solid #1c4e8a; border-radius: 8px; padding: 0.5em; background: #eef4fc"><b>DMRG</b><br><span style="color: #666">Brower et al. (2026)</span></div>
+</div>
+```
+
+<br>
+
+::: fragment
+"We want to get to right answers fast." Which answers are right depends on the precision each workload needs.
+:::
+
+::: fragment
+**The Ozaki scheme is best understood as a variable-precision method.**
+:::
