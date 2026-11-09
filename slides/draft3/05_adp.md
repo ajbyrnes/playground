@@ -143,7 +143,7 @@ How the heuristic decides "emulation slower than FP64?" is not described.
 
 [FP64 Emulation → ESC → **ADP**]{style="font-size: 0.7em; color: #666"}
 
-![](../figures/papers/schwarz/fig06.png){height="510px" fig-align="center"}
+![](../figures/papers/schwarz/fig06.png){height="380px" fig-align="center"}
 
 [FP64 : INT8 peak: **GB200** 1 : 125 · **RTX Pro 6000** 1 : 512]{style="font-size: 0.5em; color: #666"}
 

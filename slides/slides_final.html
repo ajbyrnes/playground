@@ -11,7 +11,7 @@
 
   <meta name="author" content="A. J. Byrnes">
   <meta name="dcterms.date" content="2026-11-05">
-  <title>The Ozaki Scheme</title>
+  <title>A Tour of the Ozaki Scheme</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,7 +55,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="slides_final_files/libs/revealjs/dist/theme/quarto-5bf03a4bc05d4437af4690b14a721b09.css">
+  <link rel="stylesheet" href="slides_final_files/libs/revealjs/dist/theme/quarto-ce05b4bfc1a905e35a5093875f7a3cb2.css">
   <link rel="stylesheet" href="logo.css">
   <link href="slides_final_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="slides_final_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -154,8 +154,8 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">The Ozaki Scheme</h1>
-  <p class="subtitle">Emulating FP64 matrix multiplication on low-precision hardware</p>
+  <h1 class="title">A Tour of the Ozaki Scheme</h1>
+  <p class="subtitle">From Accurate Matrix Multiplication to Variable-Precision Computing on GPUs</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -789,7 +789,7 @@ AB \approx \sum_{i + j \,\le\, s + 1} A^{(i)} B^{(j)}
 <p><span style="font-size: 0.7em; color: #666">FP64 Emulation → ESC → <strong>ADP</strong></span></p>
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="../figures/papers/schwarz/fig06.png" class="quarto-figure quarto-figure-center" height="510"></p>
+<p><img data-src="../figures/papers/schwarz/fig06.png" class="quarto-figure quarto-figure-center" height="380"></p>
 </figure>
 </div>
 <p><span style="font-size: 0.5em; color: #666">FP64 : INT8 peak: <strong>GB200</strong> 1 : 125 · <strong>RTX Pro 6000</strong> 1 : 512</span></p>
@@ -858,11 +858,13 @@ AB \approx \sum_{i + j \,\le\, s + 1} A^{(i)} B^{(j)}
 <p><em>Mixed-Precision Ab Initio Tensor Network State Methods Adapted for NVIDIA Blackwell Technology via Emulated FP64 Arithmetic</em></p>
 <div class="columns">
 <div class="column fragment" style="width:60%;">
-<p><span style="font-size: 0.6em">Cole Brower, Samuel Rodriguez Bernabeu, Jeff Hammond, John Gunnels <span style="color: #666">NVIDIA</span><br>
+<div style="font-size: 0.6em">
+<p>Cole Brower, Samuel Rodriguez Bernabeu, Jeff Hammond, John Gunnels <span style="color: #666">NVIDIA</span><br>
 Sotiris S. Xantheas <span style="color: #666">Pacific Northwest National Laboratory; University of Washington</span><br>
 Martin Ganahl <span style="color: #666">SandboxAQ</span><br>
-Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for Physics</span></span></p>
-<p>Published in <em>Journal of Chemical Theory and Computation</em>, 2026 <span class="citation" data-cites="brower2026">(<a href="#/references" role="doc-biblioref" onclick="">Brower et al. 2026</a>)</span></p>
+Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for Physics</span></p>
+</div>
+<p><span style="font-size: 0.75em">Published in <em>Journal of Chemical Theory and Computation</em>, 2026 <span class="citation" data-cites="brower2026">(<a href="#/references" role="doc-biblioref" onclick="">Brower et al. 2026</a>)</span></span></p>
 </div><div class="column fragment" style="width:40%;">
 <div style="border: 2px solid #001E61; border-radius: 8px; padding: 0.8em 1em; margin-top: 1.2em; background: #eef4fc">
 <p><strong>Ozaki emulation in an actual scientific application</strong></p>
@@ -916,6 +918,7 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 <div class="column" style="width:55%;">
 <p><img data-src="../figures/papers/brower/fig04.png" height="400"></p>
 </div><div class="column" style="width:45%;">
+<div style="font-size: 0.8em">
 <div class="fragment">
 <p><strong>Eager:</strong> Emulate every DGEMM. Slower than native FP64, even with 2 slices.</p>
 </div>
@@ -926,6 +929,7 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 <p><br></p>
 <div class="fragment">
 <p><strong>The fallback works, but that’s a bad sign for “emulation speeds up workloads.”</strong></p>
+</div>
 </div>
 </div></div>
 </section>
@@ -1071,16 +1075,89 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 <section id="performance-comes-from-hardware" class="slide level2">
 <h2>Performance comes from hardware</h2>
 <p><span style="font-size: 0.7em; color: #666">Evidence → <strong>Hardware and Inputs</strong> → Variable Precision → Future Work</span></p>
-<p><strong>Number one factor:</strong> The FP64 : low-precision throughput ratio of the target hardware</p>
-<div class="fragment">
-<p>Faster than FP64 at 1 : 512 (consumer GPUs), slower at 1 : 32 (A100)</p>
+<p><strong>Number one factor:</strong> FP64 : low-precision throughput ratio</p>
+<div class="fragment" style="margin-top: 0.6em; font-size: 0.5em">
+<div style="display: flex; gap: 0.8em; align-items: stretch; text-align: center">
+  <div style="flex: 4; border: 2px solid #D50032; border-radius: 8px; padding: 0.5em 0.8em; background: #FCEBEF">
+    <b>No speedup</b>
+    
+<table class="caption-top" style="width: 100%; margin-top: 0.3em; font-size: 1em">
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><em>MI250X</em></td>
+<td style="text-align: right;">1 : 4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><em>MI300A, MI300X</em></td>
+<td style="text-align: right;">1 : 16</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">A100</td>
+<td style="text-align: right;">1 : 32</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">H100</td>
+<td style="text-align: right;">1 : 32</td>
+</tr>
+</tbody>
+</table>
+
+  </div>
+  <div style="flex: 2.4; border: 2px solid #888; border-radius: 8px; padding: 0.5em 0.8em; background: #f4f4f4">
+    <b>Unclear</b>
+    
+<table class="caption-top" style="width: 100%; margin-top: 0.3em; font-size: 1em">
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><em>MI355X</em></td>
+<td style="text-align: right;">1 : 64</td>
+</tr>
+</tbody>
+</table>
+
+  </div>
+  <div style="flex: 5; border: 2px solid #001E61; border-radius: 8px; padding: 0.5em 0.8em; background: #eef4fc">
+    <b>Emulation <i>can</i> be faster than FP64</b>
+    
+<table class="caption-top" style="width: 100%; margin-top: 0.3em; font-size: 1em">
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">GB200</td>
+<td style="text-align: right;">1 : 128</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GB10</td>
+<td style="text-align: right;">1 : 474</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">RTX A6000</td>
+<td style="text-align: right;">1 : 515</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">RTX Pro 6000 Blackwell SE</td>
+<td style="text-align: right;">1 : 519</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">RTX 6000 Ada</td>
+<td style="text-align: right;">1 : 520</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TITAN RTX</td>
+<td style="text-align: right;">1 : 522</td>
+</tr>
+</tbody>
+</table>
+
+  </div>
 </div>
-<p><br></p>
+<div style="margin-top: 0.4em; color: #666; text-align: left">FP64 : INT8 peak throughput, dense. <i>Italics</i>: Predicted from the ratio.</div>
+</div>
 <div class="fragment">
 <p><strong>Emulation beats native DGEMM precisely on the hardware where native FP64 has been deprioritized.</strong></p>
 </div>
 <aside class="notes">
 <p>This is going to be a little less tidy, because we’ve reached the edge of the literature.</p>
+<p>The ratios are peak TFLOP/s FP64 to peak TOP/s INT8, dense. For NVIDIA parts with FP64 Tensor Cores (A100), the FP64 number is the Tensor Core one; otherwise it’s FP64 vector. The AMD rows are predictions from the ratio alone; MI355X at 1 : 64 sits between the measured no and yes cases, so it’s unclear.</p>
 <p>Concrete example of the trend: NVIDIA’s B200 to B300 goes from 37 to 1.3 TFLOP/s FP64. Meanwhile AMD’s MI250X and MI300A, in Frontier and El Capitan, keep strong FP64.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -1330,7 +1407,10 @@ Andor Menczer, Örs Legeza <span style="color: #666">Wigner Research Centre for 
 <p>“We want to get to right answers fast.” Which answers are right depends on the precision each workload needs.</p>
 </div>
 <div class="fragment">
-<p><strong>The Ozaki scheme is best understood as a variable-precision method.</strong></p>
+<p>The Ozaki scheme is promising, but we have barely mapped where it works: Few real matrices, fewer full workloads.</p>
+</div>
+<div class="fragment">
+<p>Viewing it as a variable-precision method may help us reason about how to use it.</p>
 </div>
 </section>
 <section id="references" class="slide level2 smaller scrollable">

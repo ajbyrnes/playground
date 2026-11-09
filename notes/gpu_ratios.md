@@ -12,5 +12,11 @@ Ratios are all TFlops/TOPs:
 | RTX Titan | 1:522 | Yes | 
 | RTX A6000 | 1:515 | Yes | 
 | RTX 6000 Ada | 1:520 | Yes | 
+| H100 | 1:32 | No |
+| GB10 | 1:474 | Yes | 
 | GB200 | 1:128 | Yes | 
-| RTX Pro 6000 Blackwell SE | 
+| RTX Pro 6000 Blackwell SE | 1:519 | Yes | 
+| MI250X | 1:4 | Predict No |
+| MI300A | 1:16 | Predict No | 
+| MI300X | 1:16 | Predict No | 
+| MI355X | 1:64 | Unclear |

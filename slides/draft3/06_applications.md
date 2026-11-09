@@ -38,12 +38,14 @@ With ADP: 3.5× faster, error 7e-16
 
 ::::: columns
 ::: {.column .fragment width="60%"}
-[Cole Brower, Samuel Rodriguez Bernabeu, Jeff Hammond, John Gunnels [NVIDIA]{style="color: #666"}\
+::: {style="font-size: 0.6em"}
+Cole Brower, Samuel Rodriguez Bernabeu, Jeff Hammond, John Gunnels [NVIDIA]{style="color: #666"}\
 Sotiris S. Xantheas [Pacific Northwest National Laboratory; University of Washington]{style="color: #666"}\
 Martin Ganahl [SandboxAQ]{style="color: #666"}\
-Andor Menczer, Örs Legeza [Wigner Research Centre for Physics]{style="color: #666"}]{style="font-size: 0.6em"}
+Andor Menczer, Örs Legeza [Wigner Research Centre for Physics]{style="color: #666"}
+:::
 
-Published in *Journal of Chemical Theory and Computation*, 2026 [@brower2026]
+[Published in *Journal of Chemical Theory and Computation*, 2026 [@brower2026]]{style="font-size: 0.75em"}
 :::
 
 ::: {.column .fragment width="40%"}
@@ -107,6 +109,7 @@ The matrices in DMRG are $D \times D$. Symmetries split them into smaller blocks
 :::
 
 ::: {.column width="45%"}
+::: {style="font-size: 0.8em"}
 ::: fragment
 **Eager:** Emulate every DGEMM. Slower than native FP64, even with 2 slices.
 :::
@@ -121,6 +124,7 @@ The matrices in DMRG are $D \times D$. Symmetries split them into smaller blocks
 
 ::: fragment
 **The fallback works, but that's a bad sign for "emulation speeds up workloads."**
+:::
 :::
 :::
 :::::

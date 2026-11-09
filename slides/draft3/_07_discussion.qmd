@@ -86,13 +86,41 @@ We do see the debate play out, to an extent, in Brower et al. Emulation doesn't 
 
 [Evidence → **Hardware and Inputs** → Variable Precision → Future Work]{style="font-size: 0.7em; color: #666"}
 
-**Number one factor:** The FP64 : low-precision throughput ratio of the target hardware
+**Number one factor:** FP64 : low-precision throughput ratio
 
-::: fragment
-Faster than FP64 at 1 : 512 (consumer GPUs), slower at 1 : 32 (A100)
-:::
-
-<br>
+```{=html}
+<div class="fragment" style="margin-top: 0.6em; font-size: 0.5em">
+<div style="display: flex; gap: 0.8em; align-items: stretch; text-align: center">
+  <div style="flex: 4; border: 2px solid #D50032; border-radius: 8px; padding: 0.5em 0.8em; background: #FCEBEF">
+    <b>No speedup</b>
+    <table style="width: 100%; margin-top: 0.3em; font-size: 1em">
+      <tr><td style="text-align: left"><i>MI250X</i></td><td style="text-align: right">1 : 4</td></tr>
+      <tr><td style="text-align: left"><i>MI300A, MI300X</i></td><td style="text-align: right">1 : 16</td></tr>
+      <tr><td style="text-align: left">A100</td><td style="text-align: right">1 : 32</td></tr>
+      <tr><td style="text-align: left">H100</td><td style="text-align: right">1 : 32</td></tr>
+    </table>
+  </div>
+  <div style="flex: 2.4; border: 2px solid #888; border-radius: 8px; padding: 0.5em 0.8em; background: #f4f4f4">
+    <b>Unclear</b>
+    <table style="width: 100%; margin-top: 0.3em; font-size: 1em">
+      <tr><td style="text-align: left"><i>MI355X</i></td><td style="text-align: right">1 : 64</td></tr>
+    </table>
+  </div>
+  <div style="flex: 5; border: 2px solid #001E61; border-radius: 8px; padding: 0.5em 0.8em; background: #eef4fc">
+    <b>Emulation <i>can</i> be faster than FP64</b>
+    <table style="width: 100%; margin-top: 0.3em; font-size: 1em">
+      <tr><td style="text-align: left">GB200</td><td style="text-align: right">1 : 128</td></tr>
+      <tr><td style="text-align: left">GB10</td><td style="text-align: right">1 : 474</td></tr>
+      <tr><td style="text-align: left">RTX A6000</td><td style="text-align: right">1 : 515</td></tr>
+      <tr><td style="text-align: left">RTX Pro 6000 Blackwell SE</td><td style="text-align: right">1 : 519</td></tr>
+      <tr><td style="text-align: left">RTX 6000 Ada</td><td style="text-align: right">1 : 520</td></tr>
+      <tr><td style="text-align: left">TITAN RTX</td><td style="text-align: right">1 : 522</td></tr>
+    </table>
+  </div>
+</div>
+<div style="margin-top: 0.4em; color: #666; text-align: left">FP64 : INT8 peak throughput, dense. <i>Italics</i>: Predicted from the ratio.</div>
+</div>
+```
 
 ::: fragment
 **Emulation beats native DGEMM precisely on the hardware where native FP64 has been deprioritized.**
@@ -100,6 +128,8 @@ Faster than FP64 at 1 : 512 (consumer GPUs), slower at 1 : 32 (A100)
 
 ::: notes
 This is going to be a little less tidy, because we've reached the edge of the literature.
+
+The ratios are peak TFLOP/s FP64 to peak TOP/s INT8, dense. For NVIDIA parts with FP64 Tensor Cores (A100), the FP64 number is the Tensor Core one; otherwise it's FP64 vector. The AMD rows are predictions from the ratio alone; MI355X at 1 : 64 sits between the measured no and yes cases, so it's unclear.
 
 Concrete example of the trend: NVIDIA's B200 to B300 goes from 37 to 1.3 TFLOP/s FP64. Meanwhile AMD's MI250X and MI300A, in Frontier and El Capitan, keep strong FP64.
 :::

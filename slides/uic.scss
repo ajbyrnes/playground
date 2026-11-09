@@ -6,18 +6,19 @@ $uic-light-blue: #A6C5D7;
 $uic-teal:       #3C8DA3;
 $uic-charcoal:   #343333;
 
-// Template fonts: Bricolage Grotesque ExtraBold for titles, Arial for body,
-// Azeret Mono for small uppercase labels
-@import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,800&display=swap');
+// Titles: Bricolage Grotesque ExtraBold and Azeret Mono labels, from the UIC template.
+// Body stays Roboto: the slide layouts were tuned for it, and Arial runs wider.
+@import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 $body-bg: #ffffff;
 $body-color: $uic-charcoal;
 $link-color: $uic-teal;
-$font-family-sans-serif: Arial, "Helvetica Neue", Helvetica, sans-serif;
+$font-family-sans-serif: "Roboto", "Helvetica Neue", Arial, sans-serif;
 $presentation-heading-font: "Bricolage Grotesque", Arial, sans-serif;
 $presentation-heading-color: $uic-navy;
 $presentation-heading-text-transform: none;
 $presentation-heading-letter-spacing: -0.02em;
+$presentation-h2-font-size: 1.4em;
 
 /*-- scss:rules --*/
 // Slide titles: navy ExtraBold with a short red rule underneath
@@ -74,3 +75,33 @@ $presentation-heading-letter-spacing: -0.02em;
 
 // Progress bar
 .reveal .progress { color: $uic-red; }
+
+// --- Overflow fixes (Foundations source is locked, so these target slide ids) ---
+// Mantissa-space slides: keep the equation and figure columns side by side
+.reveal #mantissa-space-one-value .columns,
+.reveal #mantissa-space-two-values .columns,
+.reveal #mantissa-space-three-values .columns {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+.reveal #mantissa-space-one-value .column,
+.reveal #mantissa-space-two-values .column,
+.reveal #mantissa-space-three-values .column {
+  flex-shrink: 1;
+  min-width: 0;
+}
+.reveal #mantissa-space-one-value mjx-container,
+.reveal #mantissa-space-two-values mjx-container,
+.reveal #mantissa-space-three-values mjx-container {
+  font-size: 75% !important;
+  margin: 0.4em 0 !important;
+}
+.reveal #mantissa-space-one-value .column:first-child > p:first-child,
+.reveal #mantissa-space-two-values .column:first-child > p:first-child,
+.reveal #mantissa-space-three-values .column:first-child > p:first-child {
+  display: none;  // the leading <br> spacer
+}
+// Floating-point basics: slightly smaller body so the last formula fits
+.reveal #floating-point-basics > :not(h2) { font-size: 0.88em; }
+.reveal #floating-point-basics mjx-container { margin: 0.5em 0 !important; }

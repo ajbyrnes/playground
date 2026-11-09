@@ -1,6 +1,6 @@
 ---
-title: "The Ozaki Scheme"
-subtitle: "Emulating FP64 matrix multiplication on low-precision hardware"
+title: "A Tour of the Ozaki Scheme"
+subtitle: "From Accurate Matrix Multiplication to Variable-Precision Computing on GPUs"
 author: "A. J. Byrnes"
 institute: "University of Illinois Chicago"
 date: 2026-11-05

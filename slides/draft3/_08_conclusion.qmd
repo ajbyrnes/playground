@@ -31,5 +31,9 @@
 :::
 
 ::: fragment
-**The Ozaki scheme is best understood as a variable-precision method.**
+The Ozaki scheme is promising, but we have barely mapped where it works: Few real matrices, fewer full workloads.
+:::
+
+::: fragment
+Viewing it as a variable-precision method may help us reason about how to use it.
 :::
